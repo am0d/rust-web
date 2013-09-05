@@ -70,17 +70,17 @@ impl HelloWorldServer {
         HelloWorldServer
     }
 
-    fn log_request(&self, _r: &Request) {
-        printf!("%s ", _r.method.to_str());
+    fn log_request(&self, _r: &Request, response: &mut ResponseWriter) {
+        printf!("%s \"", _r.method.to_str());
 
         match &_r.request_uri {
-            &Star => print("* "),
-            &AbsoluteUri(ref url) => printf!("%s ", url.to_str()),
-            &AbsolutePath(ref url) => printf!("%s ", url.to_owned()),
-            &Authority(ref url) => printf!("%s ", url.to_owned())
+            &Star => print("*"),
+            &AbsoluteUri(ref url) => printf!("%s", url.to_str()),
+            &AbsolutePath(ref url) => printf!("%s", url.to_owned()),
+            &Authority(ref url) => printf!("%s", url.to_owned())
         };
 
-        printf!(", %s, %s ", time::now().rfc822(), _r.remote_addr.unwrap().to_str());
+        printf!("\" %s %s %u", time::now().rfc822(), _r.remote_addr.unwrap().to_str(), response.status.code() as uint);
 
         println("");
     }
@@ -114,8 +114,8 @@ impl Server for HelloWorldServer {
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
         // Log request
-        self.log_request(_r);
         self.dispatch_request(_r, w);
+        self.log_request(_r, w);
 
         // send response
         /*w.headers.date = Some(time::now_utc());

@@ -4,4 +4,9 @@ It shows a small demo of serving a number of static files, and returning 404 err
 
 There are many things lacking here yet, such as checking that the url points to a file, not directory, etc, but this is a small start.
 
+To run the server on 127.0.0.1:8080:
+    make run
+
+Currently, the only publicly available page is at /static/index.html, with a stylesheet at /static/css/site.css for a small demonstration.
+
 License: This work is licensed under the MIT license.  See the License file for further details.

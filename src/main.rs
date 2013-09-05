@@ -28,6 +28,9 @@ fn get_url(request: &Request) -> ~str {
 
 
 // Controllers
+trait Controller {
+    fn dispatch_request(request: &Request, response: &mut ResponseWriter);
+}
 
 struct StaticController {
     working_dir: Path
@@ -43,7 +46,7 @@ impl StaticController {
 
     fn Get (&self, request: &Request, response: &mut ResponseWriter) {
         let url = get_url(request);
-        let file_path: PosixPath = GenericPath::from_str(url.replace("/static", self.working_dir.to_str()));
+        let file_path: PosixPath = self.working_dir.push(url);
         
         match io::file_reader(&file_path) {
             Ok(reader) => {
@@ -88,12 +91,8 @@ impl HelloWorldServer {
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
         match (&request.method, &request.request_uri) {
             (&Get, &AbsolutePath(ref url)) => {
-                if url.to_owned().starts_with("/static") {
-                    StaticController::new().Get(request, response);
-                }
-                else {
-                    self.not_found(request, response);
-                }
+                // All files are static for now!
+                StaticController::new().Get(request, response);
             },
             (_, _) => {
                 self.not_found(request, response);
@@ -113,20 +112,8 @@ impl Server for HelloWorldServer {
     }
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
-        // Log request
         self.dispatch_request(_r, w);
         self.log_request(_r, w);
-
-        // send response
-        /*w.headers.date = Some(time::now_utc());
-        w.headers.content_type = Some(MediaType {
-            type_: ~"text",
-            subtype: ~"plain",
-            parameters: ~[(~"charset", ~"UTF-8")]
-        });
-        w.headers.server = Some(~"Example");
-
-        w.write(bytes!("Hello, World!\n"));*/
     }
 }
 

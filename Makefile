@@ -3,7 +3,7 @@ RUST_FLAGS = -L . -O
 LIBS := libhttp
 
 ALL_SOURCES := $(wildcard src/*.rs)
-BINARIES := src/main
+BINARIES := build/server
 
 ALL_BINARIES := $(BINARIES) $(ALL_SOURCES:%.rs=lib%)
 
@@ -13,10 +13,10 @@ BINARIES := $(filter-out $(LIBS), $(BINARIES))
 all: $(LIBS) $(BINARIES)
 
 run: $(BINARIES)
-	cd src; ./main
+	build/server
 
-%: %.rs 
-	rustc src/main.rs -L ./rust-http/build/
+build/server: $(ALL_SOURCES)
+	rustc $< -L ./rust-http/build/ -o $@
 
 libhttp:
 	cd rust-http; $(MAKE) $(MFLAGS)

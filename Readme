@@ -1,0 +1,7 @@
+This is a sample web server built using the rust-http library from Chris Morgan (http://github.com/chris-morgan/rust-http).
+
+It shows a small demo of serving a number of static files, and returning 404 errors for non-existant files.
+
+There are many things lacking here yet, such as checking that the url points to a file, not directory, etc, but this is a small start.
+
+License: This work is licensed under the MIT license.  See the License file for further details.

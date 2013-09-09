@@ -2,21 +2,22 @@ RUST_FLAGS = -L . -O
 
 LIBS := libhttp
 
-ALL_SOURCES := $(wildcard src/*.rs)
+#ALL_SOURCES := $(wildcard src/*.rs)
+ALL_SOURCES := src/utils.rs src/todo_controller.rs
 BINARIES := build/server
 
-ALL_BINARIES := $(BINARIES) $(ALL_SOURCES:%.rs=lib%)
-
-BINARIES := $(filter-out $(LIBS), $(BINARIES))
-
+ALL_OJBS := $(ALL_SOURCES:src/%.rs=build/%.o)
 
 all: $(LIBS) $(BINARIES)
 
 run: $(BINARIES)
 	build/server
 
-build/server: $(ALL_SOURCES)
-	rustc $< -L ./rust-http/build/ -o $@
+build/%.o: src/%.rs
+	rustc $< -L rust-http/build -L build/ --lib -o $@
+
+build/server: src/main.rs $(ALL_OJBS)
+	rustc src/main.rs -L ./rust-http/build/ -L build/ -o $@
 
 libhttp:
 	cd rust-http; $(MAKE) $(MFLAGS)
@@ -27,4 +28,4 @@ lib%: %.rs
 
 clean:
 	@echo "Cleaning ..."
-	@rm -f *.so $(ALL_BINARIES)
+	@rm -f build/*.so build/*.o $(ALL_BINARIES)

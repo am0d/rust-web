@@ -1,6 +1,9 @@
 extern mod extra;
 extern mod http;
 
+extern mod todo_controller;
+extern mod utils;
+
 use std::os;
 use std::path::{Path, GenericPath};
 
@@ -14,18 +17,11 @@ use extra::time;
 use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
 use http::method::{Get};
+
+use utils::{not_found, get_url};
+use todo_controller::TodoController;
+
 //use http::headers::content_type::MediaType;
-
-// Extension methods
-fn get_url(request: &Request) -> ~str {
-    match &request.request_uri {
-        &Star => ~"*",
-        &AbsoluteUri(ref url) => url.to_str(),
-        &AbsolutePath(ref url) => url.to_owned(),
-        &Authority(ref url) => url.to_owned()
-    }
-}
-
 
 // Controllers
 trait Controller {
@@ -57,8 +53,7 @@ impl StaticController {
                 response.write(file_contents);
             },
             _ => {
-                response.status = http::status::NotFound;
-                response.write(bytes!("This page could not be found"));
+                not_found(request, response);
             }
         }
     }
@@ -92,17 +87,17 @@ impl HelloWorldServer {
         match (&request.method, &request.request_uri) {
             (&Get, &AbsolutePath(ref url)) => {
                 // All files are static for now!
-                StaticController::new().Get(request, response);
+                if url.starts_with("/todos") {
+                    TodoController::new().dispatch_request(request, response);
+                }
+                else {
+                    StaticController::new().Get(request, response);
+                }
             },
             (_, _) => {
-                self.not_found(request, response);
+                not_found(request, response);
             }
         }
-    }
-
-    fn not_found(&self, request: &Request, response: &mut ResponseWriter) {
-        response.status = http::status::NotFound;
-        response.write(bytes!("This page could not be found"));
     }
 }
 

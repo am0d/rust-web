@@ -1,11 +1,11 @@
 #[link(name="utils",
-       vers="0.1")]
+       vers="0.1")];
 
 extern mod http;
 
 use std::rt::io::Writer;
 
-use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
+use http::server::{Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
 
 // Extension methods

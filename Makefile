@@ -6,26 +6,26 @@ LIBS := libhttp
 ALL_SOURCES := src/utils.rs src/todo_controller.rs
 BINARIES := build/server
 
-ALL_OJBS := $(ALL_SOURCES:src/%.rs=build/%.o)
+ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%)
 
 all: $(LIBS) $(BINARIES)
 
 run: $(BINARIES)
 	build/server
 
-build/%.o: src/%.rs
-	rustc $< -L rust-http/build -L build/ --lib -o $@
+build/%: src/%.rs
+	@echo Compiling $<
+	@rustc $< -L rust-http/build -L build/ --lib -o $@
+	@touch $@
 
-build/server: src/main.rs $(ALL_OJBS)
-	rustc src/main.rs -L ./rust-http/build/ -L build/ -o $@
+build/server: src/main.rs $(ALL_OBJS)
+	@echo Compiling $<
+	@rustc src/main.rs -L ./rust-http/build/ -L build/ -o $@
 
 libhttp:
-	cd rust-http; $(MAKE) $(MFLAGS)
-
-lib%: %.rs
-	rustc $(RUST_FLAGS) $<
-	@touch $@
+	@echo Compiling libhttp
+	@cd rust-http; $(MAKE) $(MFLAGS)
 
 clean:
 	@echo "Cleaning ..."
-	@rm -f build/*.so build/*.o $(ALL_BINARIES)
+	@rm -f build/*.so build/*.o $(BINARIES) $(ALL_OBJS) build/lib*

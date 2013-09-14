@@ -5,46 +5,46 @@ extern mod utils;
 
 use std::vec;
 
-//use std::os;
-//use std::path::{Path, GenericPath};
-
-use std::io;
-//use std::io::ReaderUtil;
-
 use std::rt::io::Writer;
-//use extra::time;
 
 use http::server::{Request, ResponseWriter};
-use http::server::request::{AbsoluteUri, AbsolutePath};
 //use http::method::{Get};
 
 use utils::{get_url, not_found};
 
-struct TodoController;
 
-impl TodoController {
-    pub fn new() -> TodoController {
-        TodoController
+
+pub struct TodoController<'self> {
+    request: &'self Request,
+    response: &'self mut ResponseWriter<'self>
+}
+
+impl<'self> TodoController<'self> {
+    pub fn new<'a>(r: &'a Request, rw: &'a mut ResponseWriter<'a>) -> TodoController<'a> {
+        TodoController {
+            request: r,
+            response: rw
+        }
     }
 
-    pub fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
-        match get_url(request) {
+    pub fn dispatch_request(&mut self) {
+        match get_url(self.request) {
             ~"/todos" | ~"/todos/" => {
-                self.Index(request, response);
+                self.Index();
             },
             _ => {
-                not_found(request, response);
+                not_found(self.request, self.response);
             }
         }
     }
 
-    pub fn Index(&self, request: &Request, response: &mut ResponseWriter) {
+    pub fn Index(&mut self) {
         let mut todo_list: ~[~Todo] = vec::build(|push| {
             push(Todo::new(~"Finish this wonderful framework!"));
             push(Todo::new(~"Make it more generic"));
             push(Todo::new(~"Learn rust"));
         });
-        response.write(bytes!("<!DOCTYPE html>
+        self.response.write(bytes!("<!DOCTYPE html>
 <html lang=\"en\">
   <head>
     <meta charset=\"utf-8\">
@@ -92,7 +92,20 @@ impl TodoController {
 
     <div class=\"container\">"));
 
-        response.write(bytes!("</div><!-- /.container -->
+        if todo_list.len() > 0 {
+            self.response.write(bytes!("<ul>
+"));
+            for todo in todo_list.iter() {
+                self.response.write(fmt!("<li>%s</li>", todo.description).into_bytes());
+            }
+            self.response.write(bytes!("</ul>
+"));
+        }
+        else {
+            self.response.write(bytes!("There are no todos in the system yet"));
+        }
+
+        self.response.write(bytes!("</div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript

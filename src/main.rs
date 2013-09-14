@@ -88,7 +88,8 @@ impl HelloWorldServer {
             (&Get, &AbsolutePath(ref url)) => {
                 // All files are static for now!
                 if url.starts_with("/todos") {
-                    TodoController::new().dispatch_request(request, response);
+                    let mut controller = ~TodoController::new(request, response);
+                    controller.dispatch_request();
                 }
                 else {
                     StaticController::new().Get(request, response);

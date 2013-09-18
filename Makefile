@@ -29,3 +29,5 @@ libhttp:
 clean:
 	@echo "Cleaning ..."
 	@rm -f build/*.so build/*.o $(BINARIES) $(ALL_OBJS) build/lib*
+	@echo "Cleaning submodules ..."
+	@cd rust-http; $(MAKE) clean

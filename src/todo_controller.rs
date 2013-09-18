@@ -39,7 +39,7 @@ impl<'self> TodoController<'self> {
     }
 
     pub fn Index(&mut self) {
-        let mut todo_list: ~[~Todo] = vec::build(|push| {
+        let todo_list: ~[~Todo] = vec::build(None, |push| {
             push(Todo::new(~"Finish this wonderful framework!"));
             push(Todo::new(~"Make it more generic"));
             push(Todo::new(~"Learn rust"));

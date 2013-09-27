@@ -3,7 +3,7 @@ RUST_FLAGS = -L . -O
 LIBS := libhttp
 
 #ALL_SOURCES := $(wildcard src/*.rs)
-ALL_SOURCES := src/utils.rs src/todo_controller.rs
+ALL_SOURCES := src/utils.rs src/views.rs src/todo_controller.rs
 BINARIES := build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%)

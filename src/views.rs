@@ -2,19 +2,72 @@ extern mod extra;
 extern mod http;
 
 extern mod utils;
+extern mod models;
+
+use models::Todo;
 
 trait View {
-    fn render(&self) -> ~str;
+    fn render(&self, &fn(&AsSafeString)) -> ~str;
 }
 
-pub struct TodoIndexView;
+pub struct SafeHtmlString {
+    priv val: ~str
+}
 
-pub fn IndexView() -> ~TodoIndexView {
-    ~TodoIndexView
+impl SafeHtmlString {
+    pub fn into_bytes(&mut self) -> ~[u8] {
+        return (self.val).into_bytes()
+    }
+}
+
+pub trait AsSafeString {
+    fn as_safe_string(&self) -> SafeHtmlString;
+}
+
+pub struct RawHtmlString {
+    priv val: ~str
+}
+
+impl AsSafeString for RawHtmlString {
+    fn as_safe_string(&self) -> SafeHtmlString {
+        SafeHtmlString {
+            val: self.val.clone()
+        }
+    }
+}
+
+impl AsSafeString for ~str {
+    fn as_safe_string(&self) -> SafeHtmlString {
+        use std::str;
+        let mut buffer = str::with_capacity(self.char_len());
+
+        for c in self.iter() {
+            match c {
+                '<' => buffer.push_str("&lt;"),
+                '>' => buffer.push_str("&gt;"),
+                '&' => buffer.push_str("&amp;"),
+                _ => buffer.push_char(c)
+            }
+        }
+
+        return SafeHtmlString {
+            val: buffer
+        }
+    }
+}
+
+pub struct TodoIndexView {
+    model: ~[Todo]
+}
+
+pub fn IndexView(m: ~[Todo]) -> TodoIndexView {
+    TodoIndexView {
+        model: m.clone()
+    }
 }
 
 impl View for TodoIndexView {
-    fn render(&self) -> ~str {
+    fn render(&self, print: &fn(&AsSafeString)) -> ~str {
         let mut buffer = ~"";
         buffer.push_str("<!DOCTYPE html>
 <html lang=\"en\">
@@ -63,6 +116,19 @@ impl View for TodoIndexView {
     </div>
 
     <div class=\"container\">");
+
+        if self.model.len() > 0 {
+            buffer.push_str("<ul>\n");
+            for todo in self.model.iter() {
+                buffer.push_str("<li>");
+                buffer.push_str(todo.description);
+                buffer.push_str("</li>\n");
+            }
+            buffer.push_str("</ul>\n");
+        }
+        else {
+            buffer.push_str("There are no todos in the system yet");
+        }
 
         buffer.push_str("</div><!-- /.container -->
 

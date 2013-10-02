@@ -1,22 +1,94 @@
+#[link(name="views",
+       vers="0.1")];
+
 extern mod extra;
 extern mod http;
 
 extern mod utils;
+extern mod models;
+
+use models::Todo;
 
 trait View {
-    fn render(&self) -> ~str;
+    fn render(&self, &fn(&SafeHtmlString));
 }
 
-pub struct TodoIndexView;
-
-pub fn IndexView() -> ~TodoIndexView {
-    ~TodoIndexView
+pub struct SafeHtmlString {
+    priv val: ~str
 }
 
-impl View for TodoIndexView {
-    fn render(&self) -> ~str {
-        let mut buffer = ~"";
-        buffer.push_str("<!DOCTYPE html>
+impl SafeHtmlString {
+    pub fn new<'a>(v: &'a str) -> SafeHtmlString {
+        SafeHtmlString {
+            val: v.to_owned()
+        }
+    }
+
+    #[inline]
+    pub fn to_str(&self) -> ~str {
+        return self.val.to_owned()
+    }
+}
+
+pub trait AsSafeString {
+    fn as_safe_string(&self) -> SafeHtmlString;
+}
+
+pub struct RawHtmlString {
+    priv val: ~str
+}
+
+impl RawHtmlString {
+    pub fn new(v: &str) -> RawHtmlString {
+        RawHtmlString {
+            val: v.to_owned()
+        }
+    }
+}
+
+impl AsSafeString for RawHtmlString {
+    fn as_safe_string(&self) -> SafeHtmlString {
+        SafeHtmlString {
+            val: self.val.to_owned()
+        }
+    }
+}
+
+impl AsSafeString for ~str {
+    fn as_safe_string(&self) -> SafeHtmlString {
+        use std::str;
+        let mut buffer = str::with_capacity(self.char_len());
+
+        for c in self.iter() {
+            match c {
+                '<' => buffer.push_str("&lt;"),
+                '>' => buffer.push_str("&gt;"),
+                '&' => buffer.push_str("&amp;"),
+                _ => buffer.push_char(c)
+            }
+        }
+
+        return SafeHtmlString {
+            val: buffer
+        }
+    }
+}
+
+pub struct TodoIndexView<'self> {
+    model: &'self [Todo]
+}
+
+impl<'self> TodoIndexView<'self> {
+    pub fn new(m: &'self [Todo]) -> TodoIndexView<'self> {
+        TodoIndexView {
+            model: m//.clone()
+        }
+    }
+}
+
+impl<'self> View for TodoIndexView<'self> {
+    fn render(&self, print: &fn(&SafeHtmlString)) {
+        print(&SafeHtmlString::new("<!DOCTYPE html>
 <html lang=\"en\">
   <head>
     <meta charset=\"utf-8\">
@@ -62,9 +134,22 @@ impl View for TodoIndexView {
       </div>
     </div>
 
-    <div class=\"container\">");
+    <div class=\"container\">"));
 
-        buffer.push_str("</div><!-- /.container -->
+        if self.model.len() > 0 {
+            print(&SafeHtmlString::new("<ul>\n"));
+            for todo in self.model.iter() {
+                print(&SafeHtmlString::new("<li>"));
+                print(&todo.description.as_safe_string());
+                print(&SafeHtmlString::new("</li>\n"));
+            }
+            print(&SafeHtmlString::new("</ul>\n"));
+        }
+        else {
+            print(&SafeHtmlString::new("There are no todos in the system yet"));
+        }
+
+        print(&SafeHtmlString::new("</div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -73,8 +158,6 @@ impl View for TodoIndexView {
     <script src=\"../../assets/js/jquery.js\"></script>
     <script src=\"../../dist/js/bootstrap.min.js\"></script>
   </body>
-</html>");
-
-        return buffer
+</html>"));
     }
 }

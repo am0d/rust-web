@@ -18,7 +18,7 @@ pub fn get_url(request: &Request) -> ~str {
     }
 }
 
-pub fn not_found(request: &Request, response: &mut ResponseWriter) {
+pub fn not_found(_request: &Request, response: &mut ResponseWriter) {
     response.status = http::status::NotFound;
     response.write(bytes!("This page could not be found"));
 }

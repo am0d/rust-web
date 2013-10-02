@@ -1,19 +1,22 @@
+#[link(name="todo_controller",
+       vers="0.1")];
+
 extern mod extra;
 extern mod http;
 
 extern mod utils;
+extern mod models;
 extern mod views;
 
 use std::vec;
 
 use std::rt::io::Writer;
-//use extra::time;
 
 use http::server::{Request, ResponseWriter};
-//use http::method::{Get};
 
 use utils::{get_url, not_found};
 
+use models::Todo;
 use views::View;
 
 pub struct TodoController;
@@ -34,28 +37,18 @@ impl TodoController {
         }
     }
 
-    pub fn Index(&self, request: &Request, response: &mut ResponseWriter) {
-        let mut todo_list: ~[~Todo] = vec::build(None, |push| {
+    pub fn Index(&self, _request: &Request, response: &mut ResponseWriter) {
+        let todo_list: ~[Todo] = vec::build(None, |push| {
             push(Todo::new(~"Finish this wonderful framework!"));
             push(Todo::new(~"Make it more generic"));
             push(Todo::new(~"Learn rust"));
+            push(Todo::new(~"Make <b> this & publish it"));
         });
 
-        response.write(views::IndexView().render().into_bytes());
+        views::TodoIndexView::new(todo_list).render(|s| {
+            response.write(s.to_str().into_bytes());
+        });
     }
 }
 
-// Models
-struct Todo {
-    description: ~str,
-    completed: bool
-}
 
-impl Todo {
-    pub fn new(name: ~str) -> ~Todo {
-        ~Todo {
-            description: name,
-            completed: false
-        }
-    }
-}

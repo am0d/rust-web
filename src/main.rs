@@ -59,16 +59,23 @@ impl StaticController {
             let mut f = file_path.open_reader(Open);
             match f {
                 Some(_) => {
-                    match file_path.filetype() {
+                    response.headers.content_type = match file_path.filetype() {
                         Some(".css") => {
-                            response.headers.content_type = Some(MediaType {
+                            Some(MediaType {
                                 type_: ~"text",
                                 subtype: ~"css",
                                 parameters: ~[]
-                            });
+                            })
                         }
-                        _ => ()
-                    }
+                        Some(".js") => {
+                            Some(MediaType {
+                                type_: ~"text",
+                                subtype: ~"javascript",
+                                parameters: ~[]
+                            })
+                        }
+                        _ => None
+                    };
 
                     let reader = f.get_mut_ref();
                     let file_contents = reader.read_to_end();

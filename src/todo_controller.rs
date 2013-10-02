@@ -13,6 +13,7 @@ use std::vec;
 use std::rt::io::Writer;
 
 use http::server::{Request, ResponseWriter};
+use http::headers::content_type::MediaType;
 
 use utils::{get_url, not_found};
 
@@ -45,6 +46,11 @@ impl TodoController {
             push(Todo::new(~"Make <b> this & publish it"));
         });
 
+        response.headers.content_type = Some(MediaType{
+            type_: ~"text",
+            subtype: ~"html",
+            parameters: ~[(~"charset", ~"UTF-8")]
+        });
         views::TodoIndexView::new(todo_list).render(|s| {
             response.write(s.to_str().into_bytes());
         });

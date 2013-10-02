@@ -137,9 +137,9 @@ impl<'self> View for TodoIndexView<'self> {
     <div class=\"container\">"));
 
         if self.model.len() > 0 {
-            print(&SafeHtmlString::new("<ul>\n"));
+            print(&SafeHtmlString::new("<ul class=\"list-group\">\n"));
             for todo in self.model.iter() {
-                print(&SafeHtmlString::new("<li>"));
+                print(&SafeHtmlString::new("<li class=\"list-group-item\">"));
                 print(&todo.description.as_safe_string());
                 print(&SafeHtmlString::new("</li>\n"));
             }

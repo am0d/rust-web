@@ -15,7 +15,7 @@ run: $(BINARIES)
 
 build/%: src/%.rs
 	@echo Compiling $<
-	@rustc $< -L rust-http/build -L build/ --lib -o $@
+	@rustc $< -L rust-http/build -L build/ --lib --out-dir build/
 	@touch $@
 
 build/server: src/main.rs $(ALL_OBJS)

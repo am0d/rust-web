@@ -1,3 +1,6 @@
+#[link(name="todo_controller",
+       vers="0.1")];
+
 extern mod extra;
 extern mod http;
 
@@ -34,16 +37,16 @@ impl TodoController {
         }
     }
 
-    pub fn Index(&self, request: &Request, response: &mut ResponseWriter) {
+    pub fn Index(&self, _request: &Request, response: &mut ResponseWriter) {
         let todo_list: ~[Todo] = vec::build(None, |push| {
             push(Todo::new(~"Finish this wonderful framework!"));
             push(Todo::new(~"Make it more generic"));
             push(Todo::new(~"Learn rust"));
-            push(Todo::new(~"Make <> this & publish it"));
+            push(Todo::new(~"Make <b> this & publish it"));
         });
 
-        views::IndexView(todo_list).render(|s| {
-            response.write(s.as_safe_string().into_bytes());
+        views::TodoIndexView::new(todo_list).render(|s| {
+            response.write(s.to_str().into_bytes());
         });
     }
 }

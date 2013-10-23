@@ -32,7 +32,8 @@ impl TodoController {
             ~"/todos" | ~"/todos/" => {
                 self.Index(request, response);
             },
-            _ => {
+            url => {
+                println!("Not supported yet: {}", url);
                 not_found(request, response);
             }
         }

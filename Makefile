@@ -1,9 +1,10 @@
 RUST_FLAGS = -L . -O
 
-LIBS := libhttp
+LIBS := libhttp libpcre
+LINK_FLAGS := -L rust-http/build/ -L rust-pcre/ -L build/
 
 #ALL_SOURCES := $(wildcard src/*.rs)
-ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/todo_controller.rs
+ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/router.rs src/todo_controller.rs
 BINARIES := build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%)
@@ -13,18 +14,22 @@ all: $(LIBS) $(BINARIES)
 run: $(BINARIES)
 	build/server
 
-build/%: src/%.rs
+build/%: src/%.rs $(LIBS)
 	@echo Compiling $<
-	@rustc $< -L rust-http/build -L build/ --lib --out-dir build/
+	@rustc $< $(LINK_FLAGS) --lib --out-dir build/
 	@touch $@
 
 build/server: src/main.rs $(ALL_OBJS)
 	@echo Compiling $<
-	@rustc src/main.rs -L ./rust-http/build/ -L build/ -o $@
+	@rustc src/main.rs $(LINK_FLAGS) -o $@
 
 libhttp:
 	@echo Compiling libhttp
 	@cd rust-http; $(MAKE) $(MFLAGS)
+
+libpcre:
+	@echo Compiling libpcre
+	@cd rust-pcre; $(MAKE) $(MFLAGS)
 
 clean:
 	@echo "Cleaning ..."
@@ -32,3 +37,4 @@ clean:
 
 cleanall: clean
 	@cd rust-http; $(MAKE) $(MFLAGS) clean
+	@cd rust-pcre; $(MAKE) $(MFLAGS) clean

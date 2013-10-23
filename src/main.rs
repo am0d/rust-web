@@ -1,5 +1,6 @@
 extern mod extra;
 extern mod http;
+extern mod pcre;
 
 extern mod todo_controller;
 extern mod utils;
@@ -14,13 +15,16 @@ use std::rt::io::extensions::ReaderUtil;
 use extra::time;
 
 use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
-use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
+use http::server::request::AbsolutePath;
 use http::method::{Get};
 
 use utils::{not_found, get_url};
 use todo_controller::TodoController;
 
 use http::headers::content_type::MediaType;
+
+use pcre::pcre::{compile, search};
+use pcre::consts::PCRE_CASELESS;
 
 // Controllers
 trait Controller {
@@ -41,12 +45,12 @@ impl StaticController {
 
     fn Get (&self, request: &Request, response: &mut ResponseWriter) {
         let url = get_url(request);
-        let mut file_path: PosixPath = self.working_dir.push(url);
+        let mut file_path: PosixPath = self.working_dir.join(url.slice_from(1));
 
         if file_path.exists() {
             if !file_path.is_file() {
                 // try index.html, default.html in a directory
-                file_path = file_path.push("index.html");
+                file_path = file_path.join("index.html");
                 if !file_path.exists() || !file_path.is_file() {
                     file_path = file_path.with_filename("default.html");
                     if !file_path.exists() || !file_path.is_file() {
@@ -59,7 +63,7 @@ impl StaticController {
             let mut f = file_path.open_reader(Open);
             match f {
                 Some(_) => {
-                    response.headers.content_type = match file_path.filetype() {
+                    response.headers.content_type = match file_path.extension_str() {
                         Some(".css") => {
                             Some(MediaType {
                                 type_: ~"text",
@@ -105,25 +109,15 @@ impl HelloWorldServer {
     }
 
     fn log_request(&self, _r: &Request, response: &mut ResponseWriter) {
-        printf!("%s \"", _r.method.to_str());
-
-        match &_r.request_uri {
-            &Star => print("*"),
-            &AbsoluteUri(ref url) => printf!("%s", url.to_str()),
-            &AbsolutePath(ref url) => printf!("%s", url.to_owned()),
-            &Authority(ref url) => printf!("%s", url.to_owned())
-        };
-
-        printf!("\" %s %s %u", time::now().rfc822(), _r.remote_addr.unwrap().to_str(), response.status.code() as uint);
-
-        println("");
+        print!("{} \"{}\" {} {} {}\n", _r.method.to_str(), get_url(_r), time::now().rfc822(), _r.remote_addr.unwrap().to_str(), response.status.code() as uint);
     }
 
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
+        let r = compile("^/todos/?.*", PCRE_CASELESS);
         match (&request.method, &request.request_uri) {
             (&Get, &AbsolutePath(ref url)) => {
                 // All files are static for now!
-                if url.starts_with("/todos") {
+                if search(r, *url, 0).is_ok() {
                     TodoController::new().dispatch_request(request, response);
                 }
                 else {

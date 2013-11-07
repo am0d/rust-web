@@ -9,9 +9,9 @@ use std::os;
 use std::path::{Path, GenericPath};
 
 use std::rt::io::net::ip::{SocketAddr, Ipv4Addr};
-use std::rt::io::{Writer, Open};
-use std::rt::io::file::FileInfo;
-use std::rt::io::extensions::ReaderUtil;
+use std::rt::io::Writer;
+use std::rt::io::fs::File;
+use std::rt::io;
 use extra::time;
 
 use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
@@ -23,8 +23,8 @@ use todo_controller::TodoController;
 
 use http::headers::content_type::MediaType;
 
-use pcre::pcre::{compile, search};
-use pcre::consts::PCRE_CASELESS;
+use pcre::Pcre;
+use pcre::{PCRE_CASELESS};
 
 // Controllers
 trait Controller {
@@ -60,9 +60,9 @@ impl StaticController {
                 }
             }
 
-            let mut f = file_path.open_reader(Open);
+            let f = io::result(|| File::open(&file_path));
             match f {
-                Some(_) => {
+                Ok(mut reader) => {
                     response.headers.content_type = match file_path.extension_str() {
                         Some(".css") => {
                             Some(MediaType {
@@ -81,7 +81,7 @@ impl StaticController {
                         _ => None
                     };
 
-                    let reader = f.get_mut_ref();
+                    //let reader = f.get_mut_ref();
                     let file_contents = reader.read_to_end();
 
                     response.headers.content_length = Some(file_contents.len());
@@ -113,11 +113,11 @@ impl HelloWorldServer {
     }
 
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
-        let r = compile("^/todos/?.*", PCRE_CASELESS);
+        let r = Pcre::compile_with_options("^/todos/?.*", PCRE_CASELESS);
         match (&request.method, &request.request_uri) {
             (&Get, &AbsolutePath(ref url)) => {
                 // All files are static for now!
-                if search(r, *url, 0).is_ok() {
+                if r.exec(*url).is_some() {
                     TodoController::new().dispatch_request(request, response);
                 }
                 else {

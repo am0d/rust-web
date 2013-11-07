@@ -30,7 +30,7 @@ impl TodoController {
     pub fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
         match get_url(request) {
             ~"/todos" | ~"/todos/" => {
-                self.Index(request, response);
+                TodoController::Index(request, response);
             },
             url => {
                 println!("Not supported yet: {}", url);
@@ -39,7 +39,7 @@ impl TodoController {
         }
     }
 
-    pub fn Index(&self, _request: &Request, response: &mut ResponseWriter) {
+    pub fn Index(_request: &Request, response: &mut ResponseWriter) {
         let todo_list: ~[Todo] = vec::build(None, |push| {
             push(Todo::new(~"Finish this wonderful framework!"));
             push(Todo::new(~"Make it more generic"));

@@ -1,10 +1,10 @@
 RUST_FLAGS = -L . -O
 
 LIBS := libhttp libpcre
-LINK_FLAGS := -L rust-http/build/ -L rust-pcre/ -L build/
+LINK_FLAGS := -L rust-http/build/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/
 
 #ALL_SOURCES := $(wildcard src/*.rs)
-ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/router.rs src/todo_controller.rs
+ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/todo_controller.rs src/router.rs 
 BINARIES := build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%)
@@ -29,7 +29,7 @@ libhttp:
 
 libpcre:
 	@echo Compiling libpcre
-	@cd rust-pcre; $(MAKE) $(MFLAGS)
+	@cd pcre; $(MAKE) install $(MFLAGS)
 
 clean:
 	@echo "Cleaning ..."

@@ -1,12 +1,5 @@
-#[link(name="todo_controller",
-       vers="0.1")];
-
 extern mod extra;
 extern mod http;
-
-extern mod utils;
-extern mod models;
-extern mod views;
 
 use std::vec;
 
@@ -17,8 +10,10 @@ use http::headers::content_type::MediaType;
 
 use utils::{get_url, not_found};
 
-use models::Todo;
-use views::View;
+use super::models::Todo;
+use super::views;
+use super::views::View;
+
 
 pub struct TodoController;
 

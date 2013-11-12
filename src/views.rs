@@ -1,15 +1,9 @@
-#[link(name="views",
-       vers="0.1")];
-
 extern mod extra;
 extern mod http;
 
-extern mod utils;
-extern mod models;
+use super::models::Todo;
 
-use models::Todo;
-
-trait View {
+pub trait View {
     fn render(&self, &fn(&SafeHtmlString));
 }
 

@@ -1,13 +1,21 @@
 extern mod http;
 extern mod pcre;
-extern mod todo_controller;
 
-use http::server::{Request, ResponseWriter};
+//use http::server::{Request, ResponseWriter};
 
 use pcre::Pcre;
 use pcre::{PCRE_CASELESS};
 
+enum Method {
+    Delete,
+    Get,
+    Patch,
+    Post,
+    Put
+}
+
 struct Route {
+    method: Method,
     regex: pcre::Pcre,
     handler: extern fn ()
 }
@@ -26,7 +34,7 @@ impl Router {
     pub fn add_route(&mut self, pattern: &str, handler: fn()) {
         match Pcre::compile_with_options(pattern, PCRE_CASELESS) {
             Ok(r) => {
-                self.routes.push(Route {regex: r, handler: handler});
+                self.routes.push(Route {method: Get, regex: r, handler: handler});
             }
             Err(s) => {
                 fail!("Error compiling route regex: {}", s.message());

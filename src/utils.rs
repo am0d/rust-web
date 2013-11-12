@@ -1,6 +1,3 @@
-#[link(name="utils",
-       vers="0.1")];
-
 extern mod http;
 
 use std::rt::io::Writer;

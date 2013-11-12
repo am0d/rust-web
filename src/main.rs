@@ -2,9 +2,6 @@ extern mod extra;
 extern mod http;
 extern mod pcre;
 
-extern mod todo_controller;
-extern mod utils;
-
 use std::os;
 use std::path::{Path, GenericPath};
 
@@ -18,13 +15,18 @@ use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
 use http::server::request::AbsolutePath;
 use http::method::{Get};
 
-use utils::{not_found, get_url};
-use todo_controller::TodoController;
+use self::utils::{not_found, get_url};
+use self::todo_controller::TodoController;
 
 use http::headers::content_type::MediaType;
 
 use pcre::Pcre;
 use pcre::{PCRE_CASELESS};
+
+pub mod todo_controller;
+pub mod utils;
+pub mod models;
+pub mod views;
 
 // Controllers
 trait Controller {

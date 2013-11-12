@@ -113,7 +113,7 @@ impl HelloWorldServer {
     }
 
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
-        let r = Pcre::compile_with_options("^/todos/?.*", PCRE_CASELESS);
+        let r = Pcre::compile_with_options("^/todos/?.*", PCRE_CASELESS).unwrap();
         match (&request.method, &request.request_uri) {
             (&Get, &AbsolutePath(ref url)) => {
                 // All files are static for now!

@@ -14,24 +14,31 @@ enum Method {
     Put
 }
 
-struct Route {
+trait ToResponse {
+    fn to_response(&self) -> () {}
+}
+
+impl ToResponse for ~str {}
+impl ToResponse for () {}
+
+struct Route <T> {
     method: Method,
     regex: pcre::Pcre,
-    handler: extern fn ()
+    handler: extern fn () -> T
 }
 
-struct Router {
-    routes: ~[Route]
+struct Router<T> {
+    routes: ~[Route<T>]
 }
 
-impl Router {
-    fn new () -> Router {
+impl<T:ToResponse> Router<T> {
+    fn new () -> Router<T> {
         Router {
             routes: ~[]
         }
     }
 
-    pub fn add_route(&mut self, pattern: &str, handler: fn()) {
+    pub fn add_route (&mut self, pattern: &str, handler: fn() -> T) {
         match Pcre::compile_with_options(pattern, PCRE_CASELESS) {
             Ok(r) => {
                 self.routes.push(Route {method: Get, regex: r, handler: handler});
@@ -42,7 +49,7 @@ impl Router {
         }
     }
 
-    fn find_route (&self, url: &str) -> Option<extern fn()> {
+    fn find_route (&self, url: &str) -> Option<extern fn() -> T> {
         for route in self.routes.iter() {
             let h = route.handler;
             match route.regex.exec(url) {
@@ -56,16 +63,41 @@ impl Router {
     }
 }
 
-#[test]
-fn route1() {
+#[cfg(test)]
+mod test {
+    use router::Router;
+
+    fn route1() -> ~str {
+        return ~"success"
+    }
+
+    fn route2() {}
+
+    #[test]
+    fn add_route() {
+        let mut router = Router::new();
+
+        router.add_route("^/", route1);
+
+        let r = router.find_route("/");
+        assert!(r.is_some());
+        let ret = (r.unwrap())();
+        assert!(ret.as_slice() == "success");
+    }
+
+    #[test]
+    fn add_multi_routes() {
+        let mut router = Router::new();
+
+        router.add_route("^/", route1);
+        router.add_route("^/hello", route2);
+
+        let r = router.find_route("/hello");
+        assert!(r.is_some());
+        (r.unwrap())(); // no side effect
+
+        let r = router.find_route("/404");
+        assert!(r.is_none());
+    }
 }
 
-#[test]
-fn add_route() {
-    let mut router = Router::new();
-
-    router.add_route("^/", route1);
-
-    let r = router.find_route("/");
-    assert!(r.is_some());
-}

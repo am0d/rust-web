@@ -27,7 +27,10 @@ libpcre:
 	@echo Compiling libpcre
 	@cd pcre; $(MAKE) install $(MFLAGS)
 
-check: build/test
+check: libhttp libpcre build/test
+	@./$<
+
+quickcheck: build/test
 	@./$<
 
 build/test: src/test.rs $(ALL_SOURCES)

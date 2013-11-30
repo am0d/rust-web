@@ -1,7 +1,7 @@
 RUST_FLAGS = -L . -O
 
 LIBS := libhttp libpcre
-LINK_FLAGS := -L rust-http/lib/x86_64-unknown-linux-gnu/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
+LINK_FLAGS := -L rust-http/build/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 
 ALL_SOURCES := $(wildcard src/*.rs)
 #ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/todo_controller.rs src/router.rs 

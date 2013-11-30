@@ -5,13 +5,13 @@ extern mod pcre;
 use std::os;
 use std::path::{Path, GenericPath};
 
-use std::rt::io::net::ip::{SocketAddr, Ipv4Addr};
-use std::rt::io::Writer;
-use std::rt::io::fs::File;
-use std::rt::io;
+use std::io::net::ip::{SocketAddr, Ipv4Addr};
+use std::io::Writer;
+use std::io::fs::File;
+use std::io;
 use extra::time;
 
-use http::server::{Config, Server, ServerUtil, Request, ResponseWriter};
+use http::server::{Config, Server, Request, ResponseWriter};
 use http::server::request::AbsolutePath;
 use http::method::{Get};
 

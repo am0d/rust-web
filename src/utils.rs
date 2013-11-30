@@ -1,6 +1,6 @@
 extern mod http;
 
-use std::rt::io::Writer;
+use std::io::Writer;
 
 use http::server::{Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};

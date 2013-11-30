@@ -4,7 +4,7 @@ extern mod http;
 use super::models::Todo;
 
 pub trait View {
-    fn render(&self, &fn(&SafeHtmlString));
+    fn render(&self, |&SafeHtmlString| -> ());
 }
 
 pub struct SafeHtmlString {
@@ -53,7 +53,7 @@ impl AsSafeString for ~str {
         use std::str;
         let mut buffer = str::with_capacity(self.char_len());
 
-        for c in self.iter() {
+        for c in self.chars() {
             match c {
                 '<' => buffer.push_str("&lt;"),
                 '>' => buffer.push_str("&gt;"),
@@ -81,7 +81,7 @@ impl<'self> TodoIndexView<'self> {
 }
 
 impl<'self> View for TodoIndexView<'self> {
-    fn render(&self, print: &fn(&SafeHtmlString)) {
+    fn render(&self, print: |&SafeHtmlString| -> ()) {
         print(&SafeHtmlString::new("<!DOCTYPE html>
 <html lang=\"en\">
   <head>

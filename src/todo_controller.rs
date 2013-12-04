@@ -8,8 +8,6 @@ use std::io::Writer;
 use http::server::{Request, ResponseWriter};
 use http::headers::content_type::MediaType;
 
-use utils::{get_url, not_found};
-
 use super::models::Todo;
 use super::views;
 use super::views::View;
@@ -20,18 +18,6 @@ pub struct TodoController;
 impl TodoController {
     pub fn new() -> TodoController {
         TodoController
-    }
-
-    pub fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
-        match get_url(request) {
-            ~"/todos" | ~"/todos/" => {
-                TodoController::Index(request, response);
-            },
-            url => {
-                println!("Not supported yet: {}", url);
-                not_found(request, response);
-            }
-        }
     }
 
     pub fn Index(_request: &Request, response: &mut ResponseWriter) {
@@ -49,6 +35,14 @@ impl TodoController {
         });
         views::TodoIndexView::new(todo_list).render(|s| {
             response.write(s.to_str().into_bytes());
+        });
+    }
+
+    pub fn Details(_request: &Request, response: &mut ResponseWriter) {
+        response.headers.content_type = Some(MediaType {
+            type_: ~"text",
+            subtype: ~"html",
+            parameters: ~[(~"charset", ~"UTF-8")]
         });
     }
 }

@@ -1,7 +1,7 @@
 extern mod http;
 extern mod pcre;
 
-//use http::server::{Request, ResponseWriter};
+use http::server::{Request, ResponseWriter};
 
 use pcre::Pcre;
 use pcre::{PCRE_CASELESS};
@@ -17,24 +17,41 @@ enum Method {
 struct Route {
     method: Method,
     regex: pcre::Pcre,
-    handler: extern fn ()
+    pattern: ~str,
+    handler: extern fn (&Request, &mut ResponseWriter)
 }
 
-struct Router {
+impl Clone for Route {
+    fn clone(&self) -> Route {
+        Route {
+            method: self.method,
+            regex: Pcre::compile_with_options(self.pattern, PCRE_CASELESS).unwrap(),
+            pattern: self.pattern.clone(),
+            handler: self.handler
+        }
+    }
+}
+
+#[deriving(Clone)]
+pub struct Router {
     routes: ~[Route]
 }
 
 impl Router {
-    fn new () -> Router {
+    pub fn new () -> Router {
         Router {
             routes: ~[]
         }
     }
 
-    pub fn add_route(&mut self, pattern: &str, handler: fn()) {
+    pub fn add_route(&mut self, pattern: &str, handler: fn(&Request, &mut ResponseWriter)) {
         match Pcre::compile_with_options(pattern, PCRE_CASELESS) {
             Ok(r) => {
-                self.routes.push(Route {method: Get, regex: r, handler: handler});
+                self.routes.push(Route {
+                    method: Get, 
+                    regex: r, 
+                    pattern: pattern.to_owned(),
+                    handler: handler});
             }
             Err(s) => {
                 fail!("Error compiling route regex: {}", s.message());
@@ -42,7 +59,7 @@ impl Router {
         }
     }
 
-    fn find_route (&self, url: &str) -> Option<extern fn()> {
+    pub fn find_route (&self, url: &str) -> Option<extern fn(&Request, &mut ResponseWriter)> {
         for route in self.routes.iter() {
             let h = route.handler;
             match route.regex.exec(url) {

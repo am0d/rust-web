@@ -1,6 +1,3 @@
-#[link(name="models",
-       vers="0.1")];
-
 #[deriving(Clone)]
 pub struct Todo {
     description: ~str,

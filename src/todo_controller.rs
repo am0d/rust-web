@@ -8,9 +8,10 @@ use std::io::Writer;
 use http::server::{Request, ResponseWriter};
 use http::headers::content_type::MediaType;
 
+use views::View;
+
 use super::models::Todo;
-use super::views;
-use super::views::View;
+use super::views::todo_views;
 
 
 pub struct TodoController;
@@ -33,7 +34,7 @@ impl TodoController {
             subtype: ~"html",
             parameters: ~[(~"charset", ~"UTF-8")]
         });
-        views::TodoIndexView::new(todo_list).render(|s| {
+        todo_views::TodoIndexView::new(todo_list).render(|s| {
             response.write(s.to_str().into_bytes());
         });
     }
@@ -43,6 +44,11 @@ impl TodoController {
             type_: ~"text",
             subtype: ~"html",
             parameters: ~[(~"charset", ~"UTF-8")]
+        });
+
+        let model = Todo::new(~"Test");
+        todo_views::TodoDetailView::new(&model).render(|s| {
+            response.write(s.to_str().into_bytes());
         });
     }
 }

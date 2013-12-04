@@ -61,6 +61,7 @@ impl Server for HelloWorldServer {
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
         self.dispatch_request(_r, w);
+
         self.log_request(_r, w);
     }
 }

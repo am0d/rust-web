@@ -3,8 +3,7 @@ RUST_FLAGS = -L . -O
 LIBS := libhttp libpcre
 LINK_FLAGS := -L rust-http/build/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 
-ALL_SOURCES := $(wildcard src/**/*.rs)
-#ALL_SOURCES := src/utils.rs src/models.rs src/views.rs src/todo_controller.rs src/router.rs 
+WEB_SOURCES := $(wildcard src/web/**/*.rs)
 BINARIES := build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%.o)
@@ -15,7 +14,7 @@ all: $(LIBS) $(BINARIES)
 run: $(BINARIES)
 	build/server
 
-build/server: $(ALL_SOURCES) 
+build/server: $(WEB_SOURCES) 
 	@echo Compiling $@
 	@rustc src/main.rs $(LINK_FLAGS) -o $@
 
@@ -30,7 +29,7 @@ libpcre:
 check: build/test
 	@./$<
 
-build/test: src/test.rs $(ALL_SOURCES)
+build/test: src/web/test.rs $(WEB_SOURCES)
 	@echo Compiling $@ in test mode
 	@rustc $< $(LINK_FLAGS) --test --out-dir build/
 

@@ -11,7 +11,7 @@ use http::headers::content_type::MediaType;
 use views::View;
 
 use super::models::Todo;
-use super::views::todo_views;
+use super::views::todo;
 
 
 pub struct TodoController;
@@ -34,7 +34,7 @@ impl TodoController {
             subtype: ~"html",
             parameters: ~[(~"charset", ~"UTF-8")]
         });
-        todo_views::TodoIndexView::new(todo_list).render(|s| {
+        todo::TodoIndexView::new(todo_list).render(|s| {
             response.write(s.to_str().into_bytes());
         });
     }
@@ -47,7 +47,7 @@ impl TodoController {
         });
 
         let model = Todo::new(~"Test");
-        todo_views::TodoDetailView::new(&model).render(|s| {
+        todo::TodoDetailView::new(&model).render(|s| {
             response.write(s.to_str().into_bytes());
         });
     }

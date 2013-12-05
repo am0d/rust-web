@@ -1,6 +1,8 @@
 use super::models;
 
-pub mod todo_views;
+//pub use self::todo;
+
+pub mod todo;
 
 pub trait View {
     fn render(&self, |&SafeHtmlString| -> ());

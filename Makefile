@@ -3,20 +3,28 @@ RUST_FLAGS = -L . -O
 LIBS := libhttp libpcre
 LINK_FLAGS := -L rust-http/build/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 
-WEB_SOURCES := $(wildcard src/web/**/*.rs)
-BINARIES := build/server
+#TODO These two lines below should only need the first wildcard - work out why that isn't working ...
+WEB_SOURCES := $(wildcard src/web/**/*.rs) $(wildcard src/web/*.rs) $(wildcard src/web/**/**/*.rs)
+COMPILER_SOURCES := $(wildcard src/compiler/*.rs) $(wildcard src/compiler/**/*.rs)
+BINARIES := build/compiler build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%.o)
 ALL_TESTS := $(ALL_SOURCES:src/%.rs=build/%)
 
 all: $(LIBS) $(BINARIES)
 
+compiler: build/compiler
+
+build/compiler: $(COMPILER_SOURCES)
+	@echo Compiling $@
+	@rustc src/compiler/main.rs $(LINK_FLAGS) -o $@
+
 run: $(BINARIES)
 	build/server
 
 build/server: $(WEB_SOURCES) 
 	@echo Compiling $@
-	@rustc src/main.rs $(LINK_FLAGS) -o $@
+	@rustc src/web/main.rs $(LINK_FLAGS) -o $@
 
 libhttp:
 	@echo Compiling libhttp
@@ -39,6 +47,6 @@ clean:
 
 cleanall: clean
 	@cd rust-http; $(MAKE) $(MFLAGS) clean
-	@cd rust-pcre; $(MAKE) $(MFLAGS) clean
+	@cd pcre; $(MAKE) $(MFLAGS) clean
 
-.PHONY: check clean cleanall run
+.PHONY: check clean cleanall run 

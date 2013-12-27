@@ -1,10 +1,12 @@
 extern mod http;
 extern mod pcre;
 
+use extra::enum_set::EnumSet;
+
 use http::server::{Request, ResponseWriter};
 
 use pcre::Pcre;
-use pcre::{PCRE_CASELESS};
+use pcre::{CompileOption,Caseless};
 
 enum Method {
     Delete,
@@ -23,9 +25,11 @@ struct Route {
 
 impl Clone for Route {
     fn clone(&self) -> Route {
+        let mut compile_options = EnumSet::<CompileOption>::empty();
+        compile_options.add(Caseless);
         Route {
             method: self.method,
-            regex: Pcre::compile_with_options(self.pattern, PCRE_CASELESS).unwrap(),
+            regex: Pcre::compile_with_options(self.pattern, &compile_options).unwrap(),
             pattern: self.pattern.clone(),
             handler: self.handler
         }
@@ -45,7 +49,9 @@ impl Router {
     }
 
     pub fn add_route(&mut self, pattern: &str, handler: fn(&Request, &mut ResponseWriter)) {
-        match Pcre::compile_with_options(pattern, PCRE_CASELESS) {
+        let mut compile_options = EnumSet::<CompileOption>::empty();
+        compile_options.add(Caseless);
+        match Pcre::compile_with_options(pattern, &compile_options) {
             Ok(r) => {
                 self.routes.push(Route {
                     method: Get, 

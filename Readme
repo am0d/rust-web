@@ -1,12 +1,16 @@
 This is a sample web server built using the rust-http library from Chris Morgan (http://github.com/chris-morgan/rust-http).
 
-It shows a small demo of serving a number of static files, and returning 404 errors for non-existant files.
+It shows a small demo of serving a number of static files, as well as 2 dynamic routes which render views, and returning 404 errors for non-existant files.
 
-There are many things lacking here yet, such as checking that the url points to a file, not directory, etc, but this is a small start.
+There are many things lacking here yet, but I am trying to flesh out the API for the framework as I go along.
 
 To run the server on 127.0.0.1:8080:
     make run
 
-Currently, the only publicly available page is at /static/index.html, with a stylesheet at /static/css/site.css for a small demonstration.
+Currently, the index page (http://127.0.0.1:8080/) as well as 2 todo pages (http://127.0.0.1:8080/todos and http://127.0.0.1:8080/todos/{}) are handled, as well as all the static files required for these.
+
+Future plans include writing a compiler for a Razor-like view syntax (which has been started already in the src/compiler folder), which would generate Rust code to be compiled with the rest of the framework.  I also still need to hook this up to a database engine, and build in some support for migrations, etc.
+
+Note: I make no claims about this being secure, fast or a recommended way of doing things.  I am writing this framework as an exercise for myself, to learn how a web framework is put together.  I am also not an expert in Rust, and there are likely plenty of things that could be done much better in here.
 
 License: This work is licensed under the MIT license.  See the License file for further details.

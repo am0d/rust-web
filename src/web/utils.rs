@@ -1,9 +1,9 @@
 extern mod http;
 
-use std::io::Writer;
-
 use http::server::{Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
+
+use views::{Action, SafeHtmlString};
 
 // Extension methods
 pub fn get_url(request: &Request) -> ~str {
@@ -15,8 +15,15 @@ pub fn get_url(request: &Request) -> ~str {
     }
 }
 
-pub fn not_found(_request: &Request, response: &mut ResponseWriter) {
-    response.status = http::status::NotFound;
-    response.write(bytes!("This page could not be found"));
+struct NotFound;
+
+impl Action for NotFound {
+    fn render(&self, print: |&SafeHtmlString| -> ()) {
+        print(&SafeHtmlString::new("This page could not be found"));
+    }
 }
 
+pub fn not_found(_: &Request, response: &mut ResponseWriter) -> ~Action {
+    response.status = http::status::NotFound;
+    ~NotFound as ~Action
+}

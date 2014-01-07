@@ -8,6 +8,8 @@ use http::server::{Request, ResponseWriter};
 use pcre::Pcre;
 use pcre::{CompileOption,Caseless};
 
+use views::Action;
+
 enum Method {
     Delete,
     Get,
@@ -20,7 +22,7 @@ struct Route {
     method: Method,
     regex: pcre::Pcre,
     pattern: ~str,
-    handler: extern fn (&Request, &mut ResponseWriter)
+    handler: extern fn (&Request, &mut ResponseWriter) -> ~Action
 }
 
 impl Clone for Route {
@@ -48,7 +50,7 @@ impl Router {
         }
     }
 
-    pub fn add_route(&mut self, pattern: &str, handler: fn(&Request, &mut ResponseWriter)) {
+    pub fn add_route(&mut self, pattern: &str, handler: fn(&Request, &mut ResponseWriter) -> ~Action) {
         let mut compile_options = EnumSet::<CompileOption>::empty();
         compile_options.add(Caseless);
         match Pcre::compile_with_options(pattern, &compile_options) {
@@ -65,7 +67,7 @@ impl Router {
         }
     }
 
-    pub fn find_route (&self, url: &str) -> Option<extern fn(&Request, &mut ResponseWriter)> {
+    pub fn find_route (&self, url: &str) -> Option<extern fn(&Request, &mut ResponseWriter) -> ~Action> {
         for route in self.routes.iter() {
             let h = route.handler;
             match route.regex.exec(url) {

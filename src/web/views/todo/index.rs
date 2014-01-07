@@ -1,22 +1,22 @@
 extern mod extra;
 extern mod http;
 
-use super::super::{View, SafeHtmlString};
+use super::super::{Action, SafeHtmlString};
 use super::super::models::Todo;
 
 pub struct TodoIndexView<'a> {
-    model: &'a [Todo]
+    model: ~[Todo]
 }
 
 impl<'a> TodoIndexView<'a> {
-    pub fn new(m: &'a [Todo]) -> TodoIndexView<'a> {
+    pub fn new(m: ~[Todo]) -> TodoIndexView<'a> {
         TodoIndexView {
             model: m//.clone()
         }
     }
 }
 
-impl<'a> View for TodoIndexView<'a> {
+impl<'a> Action for TodoIndexView<'a> {
     fn render(&self, print: |&SafeHtmlString| -> ()) {
         print(&SafeHtmlString::new("<!DOCTYPE html>
 <html lang=\"en\">

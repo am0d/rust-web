@@ -12,11 +12,19 @@ use http::headers::content_type::MediaType;
 
 use super::utils::{get_url,not_found};
 
+use views::{Action, SafeHtmlString};
+
+pub struct StaticFile;
+
+impl Action for StaticFile  {
+    fn render(&self, _: |&SafeHtmlString| -> ()) {
+    }
+}
 
 pub struct StaticController;
 
 impl StaticController {
-    pub fn Get (request: &Request, response: &mut ResponseWriter) {
+    pub fn Get (request: &Request, response: &mut ResponseWriter) -> ~Action {
         let working_dir = os::getcwd();
         let url = get_url(request);
         let mut file_path: PosixPath = working_dir.join(url.slice_from(1));
@@ -29,7 +37,7 @@ impl StaticController {
                     file_path = file_path.with_filename("default.html");
                     if !file_path.exists() || !file_path.is_file() {
                         not_found(request, response);
-                        return;
+                        return ~StaticFile as ~Action;
                     }
                 }
             }
@@ -70,6 +78,8 @@ impl StaticController {
         else {
             not_found(request, response);
         }
+
+        return ~StaticFile as ~Action
     }
 }
 

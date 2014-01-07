@@ -45,14 +45,18 @@ impl HelloWorldServer {
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {
         let handler = self.router.find_route(get_url(request));
 
-        match handler {
+        let action = match handler {
             Some(h) => {
-                h(request, response);
+                h(request, response)
             },
             None => {
-                not_found(request, response);
+                not_found(request, response)
             }
-        }
+        };
+
+        action.render(|s| {
+            response.write(s.to_str().into_bytes());
+        });
     }
 }
 

@@ -4,7 +4,7 @@ use super::models;
 
 pub mod todo;
 
-pub trait View {
+pub trait Action {
     fn render(&self, |&SafeHtmlString| -> ());
 }
 

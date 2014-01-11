@@ -4,7 +4,7 @@ extern mod extra;
 extern mod http;
 extern mod pcre;
 
-use std::path::GenericPath;
+use std::task;
 use extra::time;
 
 use std::io::net::ip::{SocketAddr, Ipv4Addr};
@@ -66,14 +66,15 @@ impl Server for HelloWorldServer {
     }
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
-        self.dispatch_request(_r, w);
+        //do task::try {
+            self.dispatch_request(_r,w);
+        //};
 
         self.log_request(_r, w);
     }
 }
 
 fn main() {
-    println("Rust server up and running");
     let mut server = HelloWorldServer::new();
 
     server.router.add_route("^/todos/?$", TodoController::Index);
@@ -82,5 +83,6 @@ fn main() {
     server.router.add_route("^/assets/.*", StaticController::Get);
     server.router.add_route("^/$", StaticController::Get);
 
+    println("Rust server up and running");
     server.serve_forever();
 }

@@ -1,7 +1,7 @@
 extern mod extra;
 extern mod http;
 
-use super::super::{Action, SafeHtmlString};
+use super::super::{Action, AsSafeString, SafeHtmlString};
 use super::super::models::Todo;
 
 pub struct TodoIndexView<'a> {

@@ -48,7 +48,7 @@ impl TodoController {
         ~todo::TodoDetailView::new(model) as ~Action
     }
     
-    pub fn Fail(_request: &Request, response: &mut ResponseWriter) -> ~Action {
+    pub fn Fail(_request: &Request, _response: &mut ResponseWriter) -> ~Action {
         fail!("Failing on purpose here!");
     }
 }

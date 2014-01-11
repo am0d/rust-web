@@ -4,13 +4,13 @@ extern mod extra;
 extern mod http;
 extern mod pcre;
 
-use std::task;
 use extra::time;
 
 use std::io::net::ip::{SocketAddr, Ipv4Addr};
 
 use http::server::{Config, Server, Request, ResponseWriter};
 use http::method::{Get};
+use http::status::InternalServerError;
 
 use self::utils::{not_found, get_url};
 use self::todo_controller::TodoController;
@@ -66,11 +66,22 @@ impl Server for HelloWorldServer {
     }
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
-        //do task::try {
-            self.dispatch_request(_r,w);
-        //};
+        use std::unstable::finally::Finally;
+        use std::task::failing;
 
-        self.log_request(_r, w);
+        (|| {
+            // try to execute the request
+            self.dispatch_request(_r,w);
+        }).finally(|| {
+            if failing() {
+                // Set the status to 500 if the request failed
+                w.status = InternalServerError;
+                w.write(bytes!("Internal server error"));
+                w.flush();
+            }
+            
+            self.log_request(_r, w);
+        });
     }
 }
 
@@ -79,6 +90,8 @@ fn main() {
 
     server.router.add_route("^/todos/?$", TodoController::Index);
     server.router.add_route("^/todos/(\\d+)$", TodoController::Details);
+
+    server.router.add_route("^/fail", TodoController::Fail);
 
     server.router.add_route("^/assets/.*", StaticController::Get);
     server.router.add_route("^/$", StaticController::Get);

@@ -1,3 +1,4 @@
+extern mod extra;
 extern mod http;
 extern mod pcre;
 

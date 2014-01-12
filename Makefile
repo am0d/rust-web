@@ -39,7 +39,7 @@ check: build/test
 
 build/test: src/web/test.rs $(WEB_SOURCES)
 	@echo Compiling $@ in test mode
-	@rustc $< $(LINK_FLAGS) --test --out-dir build/
+	@rustc $< $(LINK_FLAGS) $(RUST_FLAGS) --test --out-dir build/
 
 clean:
 	@echo "Cleaning ..."

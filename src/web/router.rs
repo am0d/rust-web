@@ -1,14 +1,10 @@
-extern mod http;
+extern mod extra;
 extern mod pcre;
 
 use extra::enum_set::EnumSet;
 
-use http::server::{Request, ResponseWriter};
-
 use pcre::Pcre;
 use pcre::{CompileOption,Caseless};
-
-use views::Action;
 
 enum Method {
     Delete,
@@ -18,39 +14,39 @@ enum Method {
     Put
 }
 
-struct Route {
+struct Route<T> {
     method: Method,
     regex: pcre::Pcre,
     pattern: ~str,
-    handler: extern fn (&Request, &mut ResponseWriter) -> ~Action
+    handler: T
 }
 
-impl Clone for Route {
-    fn clone(&self) -> Route {
+impl<T:Clone> Clone for Route<T> {
+    fn clone(&self) -> Route<T> {
         let mut compile_options = EnumSet::<CompileOption>::empty();
         compile_options.add(Caseless);
         Route {
             method: self.method,
             regex: Pcre::compile_with_options(self.pattern, &compile_options).unwrap(),
             pattern: self.pattern.clone(),
-            handler: self.handler
+            handler: self.handler.clone()
         }
     }
 }
 
 #[deriving(Clone)]
-pub struct Router {
-    routes: ~[Route]
+pub struct Router<T> {
+    routes: ~[Route<T>]
 }
 
-impl Router {
-    pub fn new () -> Router {
+impl<T:Clone> Router<T> {
+    pub fn new () -> Router<T> {
         Router {
             routes: ~[]
         }
     }
 
-    pub fn add_route(&mut self, pattern: &str, handler: fn(&Request, &mut ResponseWriter) -> ~Action) {
+    pub fn add_route(&mut self, pattern: &str, handler: T) {
         let mut compile_options = EnumSet::<CompileOption>::empty();
         compile_options.add(Caseless);
         match Pcre::compile_with_options(pattern, &compile_options) {
@@ -67,12 +63,12 @@ impl Router {
         }
     }
 
-    pub fn find_route (&self, url: &str) -> Option<extern fn(&Request, &mut ResponseWriter) -> ~Action> {
+    pub fn find_route (&self, url: &str) -> Option<T> {
         for route in self.routes.iter() {
-            let h = route.handler;
+            let h = &route.handler;
             match route.regex.exec(url) {
                 Some(_) => {
-                    return Some(h)
+                    return Some((*h).clone())
                 }
                 None => {}
             }
@@ -81,16 +77,26 @@ impl Router {
     }
 }
 
-#[test]
+#[cfg(test)]
 fn route1() {
 }
 
 #[test]
 fn add_route() {
-    let mut router = Router::new();
+    let mut router = Router::<extern fn()>::new();
 
     router.add_route("^/", route1);
 
     let r = router.find_route("/");
     assert!(r.is_some());
+}
+
+#[test]
+fn dont_match_routes() {
+    let mut router = Router::<extern fn()>::new();
+
+    router.add_route("^/$", route1);
+
+    let r = router.find_route("/missing");
+    assert!(r.is_none());
 }

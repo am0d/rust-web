@@ -28,13 +28,13 @@ pub mod router;
 // Web server part
 #[deriving(Clone)]
 struct HelloWorldServer {
-    router: ~router::Router
+    router: router::Router<extern fn(&Request, &mut ResponseWriter) -> ~views::Action>
 }
 
 impl HelloWorldServer {
     fn new() -> HelloWorldServer {
         HelloWorldServer {
-            router: ~router::Router::new()
+            router: router::Router::new()
         }
     }
 

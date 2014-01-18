@@ -96,6 +96,6 @@ fn main() {
     server.router.add_route("^/assets/.*", StaticController::Get);
     server.router.add_route("^/$", StaticController::Get);
 
-    println("Rust server up and running");
+    println!("{}", "Rust server up and running");
     server.serve_forever();
 }

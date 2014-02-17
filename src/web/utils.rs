@@ -1,7 +1,6 @@
-extern mod http;
-
 use http::server::{Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
+use http::status;
 
 use views::{Action, SafeHtmlString};
 
@@ -24,6 +23,6 @@ impl Action for NotFound {
 }
 
 pub fn not_found(_: &Request, response: &mut ResponseWriter) -> ~Action {
-    response.status = http::status::NotFound;
+    response.status = status::NotFound;
     ~NotFound as ~Action
 }

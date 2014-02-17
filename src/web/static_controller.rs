@@ -1,6 +1,3 @@
-extern mod extra;
-extern mod http;
-
 use std::os;
 use std::io::Writer;
 use std::io::fs::File;
@@ -42,7 +39,7 @@ impl StaticController {
                 }
             }
 
-            let f = io::result(|| File::open(&file_path));
+            let f = File::open(&file_path);
             match f {
                 Ok(mut reader) => {
                     response.headers.content_type = match file_path.extension_str() {
@@ -64,7 +61,10 @@ impl StaticController {
                     };
 
                     //let reader = f.get_mut_ref();
-                    let file_contents = reader.read_to_end();
+                    let file_contents = match reader.read_to_end() {
+                        Ok(contents) => contents,
+                        Err(msg) => fail!(msg)
+                    };
 
                     response.headers.content_length = Some(file_contents.len());
 

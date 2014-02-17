@@ -1,7 +1,7 @@
 RUST_FLAGS = -L . -O
 
 LIBS := libhttp libpcre
-LINK_FLAGS := -L rust-http/build/ -L pcre/lib/x86_64-unknown-linux-gnu/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
+LINK_FLAGS := -L rust-http/build/ -L pcre/lib/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 
 #TODO These two lines below should only need the first wildcard - work out why that isn't working ...
 WEB_SOURCES := $(wildcard src/web/**/*.rs) $(wildcard src/web/*.rs) $(wildcard src/web/**/**/*.rs)

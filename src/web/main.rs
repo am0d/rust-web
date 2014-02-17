@@ -1,8 +1,8 @@
 #[feature(globs)];
 
-extern mod extra;
-extern mod http;
-extern mod pcre;
+extern crate extra;
+extern crate http;
+extern crate pcre;
 
 use extra::time;
 
@@ -66,22 +66,35 @@ impl Server for HelloWorldServer {
     }
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
-        use std::unstable::finally::Finally;
+        use std::unstable::finally::try_finally;
         use std::task::failing;
 
-        (|| {
-            // try to execute the request
-            self.dispatch_request(_r,w);
-        }).finally(|| {
-            if failing() {
-                // Set the status to 500 if the request failed
-                w.status = InternalServerError;
-                w.write(bytes!("Internal server error"));
-                w.flush();
-            }
-            
-            self.log_request(_r, w);
-        });
+        struct State <'a, 'b> {
+            r: &'a Request,
+            w: &'a mut ResponseWriter<'b>
+        };
+
+        let mut s = State {r: _r, w: w};
+
+        try_finally(&mut s, (),
+            |state, ()| {
+                let r = state.r;
+                let w = &mut state.w;
+                // try to execute the request
+                self.dispatch_request(r,*w);
+            },
+            |state| {
+                let r = state.r;
+                let w = &mut state.w;
+                if failing() {
+                    // Set the status to 500 if the request failed
+                    w.status = InternalServerError;
+                    drop(w.write(bytes!("Internal server error")));
+                    drop(w.flush());
+                }
+
+                self.log_request(r, *w);
+            });
     }
 }
 

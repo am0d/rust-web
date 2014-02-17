@@ -1,6 +1,3 @@
-extern mod extra;
-extern mod pcre;
-
 use extra::enum_set::EnumSet;
 
 use pcre::Pcre;
@@ -16,7 +13,7 @@ enum Method {
 
 struct Route<T> {
     method: Method,
-    regex: pcre::Pcre,
+    regex: Pcre,
     pattern: ~str,
     handler: T
 }

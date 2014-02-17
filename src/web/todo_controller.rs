@@ -1,6 +1,3 @@
-extern mod extra;
-extern mod http;
-
 use std::vec;
 
 use http::server::{Request, ResponseWriter};

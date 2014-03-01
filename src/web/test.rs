@@ -1,6 +1,6 @@
-extern mod extra;
-extern mod http;
-extern mod pcre;
+extern crate extra;
+extern crate http;
+extern crate pcre;
 
 pub mod views;
 pub mod utils;

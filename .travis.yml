@@ -16,7 +16,7 @@ install:
     - sudo dpkg -i --force-overwrite /var/cache/apt/archives/libpcre3gsa-dev_*.deb
     - sudo apt-get install rust-nightly
 script:
-    - make "PCRE_LIBDIR=$PCRE_LIBDIR"
+    - make
 notifications:
     email:
         - damien.schoof+github@gmail.com

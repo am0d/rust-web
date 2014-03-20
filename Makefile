@@ -2,6 +2,9 @@ RUST_FLAGS = -L . -O
 
 LIBS := libhttp libpcre
 LINK_FLAGS := -L rust-http/build/ -L pcre/lib/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
+ifdef PCRE_LIBDIR
+LINK_FLAGS += -L $(PCRE_LIBDIR)
+endif
 
 #TODO These two lines below should only need the first wildcard - work out why that isn't working ...
 WEB_SOURCES := $(wildcard src/web/**/*.rs) $(wildcard src/web/*.rs) $(wildcard src/web/**/**/*.rs)
@@ -34,7 +37,7 @@ libhttp:
 
 libpcre:
 	@echo Compiling libpcre
-	cd pcre; $(MAKE) install $(MFLAGS) PCRE_LIBDIR=$(PCRE_LIBDIR)
+	cd pcre; $(MAKE) install $(MFLAGS)
 
 check: build/test
 	@./$<

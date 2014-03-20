@@ -17,6 +17,7 @@ compiler: build/compiler
 
 build/compiler: $(COMPILER_SOURCES)
 	@echo Compiling $@
+	@mkdir -p build/
 	@rustc src/compiler/main.rs $(LINK_FLAGS) -o $@
 
 run: $(BINARIES)
@@ -24,6 +25,7 @@ run: $(BINARIES)
 
 build/server: $(WEB_SOURCES) 
 	@echo Compiling $@
+	@mkdir -p build/
 	@rustc src/web/main.rs $(RUST_FLAGS) $(LINK_FLAGS) -o $@
 
 libhttp:

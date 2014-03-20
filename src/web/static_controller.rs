@@ -47,14 +47,14 @@ impl StaticController {
                             Some(MediaType {
                                 type_: ~"text",
                                 subtype: ~"css",
-                                parameters: ~[]
+                                parameters: vec!()
                             })
                         }
                         Some("js") => {
                             Some(MediaType {
                                 type_: ~"text",
                                 subtype: ~"javascript",
-                                parameters: ~[]
+                                parameters: vec!()
                             })
                         }
                         _ => None

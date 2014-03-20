@@ -1,4 +1,6 @@
-use extra::enum_set::EnumSet;
+use collections::enum_set::EnumSet;
+
+use std::vec_ng::Vec;
 
 use pcre::Pcre;
 use pcre::{CompileOption,Caseless};
@@ -60,12 +62,18 @@ impl<T:Clone> Router<T> {
         }
     }
 
-    pub fn find_route (&self, url: &str) -> Option<T> {
+    /*pub fn add_routes(&mut self, routes: Vec<(&str, T)>) {
+        for &(pattern, handler) in routes.iter() {
+            self.add_route(pattern, handler);
+        }
+    }*/
+
+    pub fn find_route<'a> (&'a self, url: &str) -> Option<&'a T> {
         for route in self.routes.iter() {
             let h = &route.handler;
             match route.regex.exec(url) {
                 Some(_) => {
-                    return Some((*h).clone())
+                    return Some(h)
                 }
                 None => {}
             }

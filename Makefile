@@ -24,7 +24,7 @@ run: $(BINARIES)
 
 build/server: $(WEB_SOURCES) 
 	@echo Compiling $@
-	@rustc src/web/main.rs $(LINK_FLAGS) -o $@
+	@rustc src/web/main.rs $(RUST_FLAGS) $(LINK_FLAGS) -o $@
 
 libhttp:
 	@echo Compiling libhttp

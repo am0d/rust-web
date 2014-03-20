@@ -1,10 +1,10 @@
+#[feature(macro_rules)];
 #[feature(globs)];
 
-extern crate extra;
+extern crate collections;
+extern crate time;
 extern crate http;
 extern crate pcre;
-
-use extra::time;
 
 use std::io::net::ip::{SocketAddr, Ipv4Addr};
 
@@ -28,7 +28,7 @@ pub mod router;
 // Web server part
 #[deriving(Clone)]
 struct HelloWorldServer {
-    router: router::Router<extern fn(&Request, &mut ResponseWriter) -> ~views::Action>
+    router: router::Router<fn(&Request, &mut ResponseWriter) -> ~views::Action>
 }
 
 impl HelloWorldServer {
@@ -47,7 +47,7 @@ impl HelloWorldServer {
 
         let action = match handler {
             Some(h) => {
-                h(request, response)
+                (*h)(request, response)
             },
             None => {
                 not_found(request, response)
@@ -98,16 +98,25 @@ impl Server for HelloWorldServer {
     }
 }
 
+macro_rules! route(
+    ($router:expr -> $($url:expr => $handler:expr),+) => {
+        for &(url, handler) in vec!($(($url, $handler)),+).iter() {
+            $router.add_route(url, handler);
+        }
+    }
+    )
+
 fn main() {
     let mut server = HelloWorldServer::new();
 
-    server.router.add_route("^/todos/?$", TodoController::Index);
-    server.router.add_route("^/todos/(\\d+)$", TodoController::Details);
+    route!(server.router -> 
+           "^/todos/?$" => TodoController::Index,
+           "^/todos/(\\d+)$" => TodoController::Details,
 
-    server.router.add_route("^/fail", TodoController::Fail);
+           "^/fail" => TodoController::Fail,
 
-    server.router.add_route("^/assets/.*", StaticController::Get);
-    server.router.add_route("^/$", StaticController::Get);
+           "^/assets/.*" => StaticController::Get,
+           "^/$" => StaticController::Get);
 
     println!("{}", "Rust server up and running");
     server.serve_forever();

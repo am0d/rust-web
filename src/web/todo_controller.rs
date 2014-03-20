@@ -27,7 +27,7 @@ impl TodoController {
         response.headers.content_type = Some(MediaType{
             type_: ~"text",
             subtype: ~"html",
-            parameters: ~[(~"charset", ~"UTF-8")]
+            parameters: vec!((~"charset", ~"UTF-8"))
         });
 
         ~todo::TodoIndexView::new(todo_list) as ~Action
@@ -37,7 +37,7 @@ impl TodoController {
         response.headers.content_type = Some(MediaType {
             type_: ~"text",
             subtype: ~"html",
-            parameters: ~[(~"charset", ~"UTF-8")]
+            parameters: vec!((~"charset", ~"UTF-8"))
         });
 
         let model = ~Todo::new(~"Test");

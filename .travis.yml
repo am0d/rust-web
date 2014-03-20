@@ -1,6 +1,7 @@
 env:
-    - PCRE_LIBDIR="/opt/gimp-standalone/lib/x86_64-linux-gnu"
-    - LD_LIBRARY_PATH="/opt/gimp-standalone/lib/x86_64-linux-gnu"
+    global:
+        - PCRE_LIBDIR="/opt/gimp-standalone/lib/x86_64-linux-gnu"
+        - LD_LIBRARY_PATH="/opt/gimp-standalone/lib/x86_64-linux-gnu"
 before_install:
   - yes | sudo add-apt-repository ppa:hansjorg/rust
   - yes | sudo add-apt-repository ppa:otto-kesselgulasch/gimp-standalone

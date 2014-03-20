@@ -16,7 +16,6 @@ install:
     - sudo apt-get install rust-nightly
 script:
     - make "PCRE_LIBDIR=$PCRE_LIBDIR"
-    - make test "PCRE_LIBDIR=$PCRE_LIBDIR"
 notifications:
     email:
         - damien.schoof+github@gmail.com

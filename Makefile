@@ -34,7 +34,7 @@ libhttp:
 
 libpcre:
 	@echo Compiling libpcre
-	@cd pcre; $(MAKE) install $(MFLAGS)
+	cd pcre; $(MAKE) install $(MFLAGS)
 
 check: build/test
 	@./$<

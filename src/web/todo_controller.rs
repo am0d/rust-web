@@ -17,12 +17,11 @@ impl TodoController {
     }
 
     pub fn Index(_request: &Request, response: &mut ResponseWriter) -> ~Action {
-        let todo_list: ~[Todo] = vec::build(None, |push| {
-            push(Todo::new(~"Finish this wonderful framework!"));
-            push(Todo::new(~"Make it more generic"));
-            push(Todo::new(~"Learn rust"));
-            push(Todo::new(~"Make <b> this & publish it"));
-        });
+        let todo_list = vec!(
+            Todo::new(~"Finish this wonderful framework!"),
+            Todo::new(~"Make it more generic"),
+            Todo::new(~"Learn rust"),
+            Todo::new(~"Make <b> this & publish it"));
 
         response.headers.content_type = Some(MediaType{
             type_: ~"text",

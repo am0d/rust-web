@@ -26,7 +26,7 @@ build/compiler: $(COMPILER_SOURCES)
 run: $(BINARIES)
 	build/server
 
-build/server: $(WEB_SOURCES) 
+build/server: $(WEB_SOURCES) $(LIBS)
 	@echo Compiling $@
 	@mkdir -p build/
 	@rustc src/web/main.rs $(RUST_FLAGS) $(LINK_FLAGS) -o $@

@@ -1,6 +1,6 @@
 use collections::enum_set::EnumSet;
 
-use std::vec_ng::Vec;
+use std::vec::Vec;
 
 use pcre::Pcre;
 use pcre::{CompileOption,Caseless};

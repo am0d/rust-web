@@ -2,11 +2,11 @@ use super::super::{Action, AsSafeString, SafeHtmlString};
 use super::super::models::Todo;
 
 pub struct TodoIndexView<'a> {
-    model: ~[Todo]
+    model: Vec<Todo>
 }
 
 impl<'a> TodoIndexView<'a> {
-    pub fn new(m: ~[Todo]) -> TodoIndexView<'a> {
+    pub fn new(m: Vec<Todo>) -> TodoIndexView<'a> {
         TodoIndexView {
             model: m//.clone()
         }

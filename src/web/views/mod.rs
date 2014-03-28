@@ -5,7 +5,7 @@ use super::models;
 pub mod todo;
 
 pub trait Action {
-    fn render(&self, |&SafeHtmlString| -> ());
+    fn render(&self, &mut Writer);
 }
 
 pub struct SafeHtmlString {

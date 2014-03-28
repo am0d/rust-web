@@ -26,7 +26,7 @@ build/compiler: $(COMPILER_SOURCES)
 run: $(BINARIES)
 	build/server
 
-build/server: $(WEB_SOURCES) $(LIBS)
+build/server: $(WEB_SOURCES)
 	@echo Compiling $@
 	@mkdir -p build/
 	@rustc src/web/main.rs $(RUST_FLAGS) $(LINK_FLAGS) -o $@
@@ -54,4 +54,4 @@ cleanall: clean
 	@cd rust-http; $(MAKE) $(MFLAGS) clean
 	@cd pcre; $(MAKE) $(MFLAGS) clean
 
-.PHONY: check clean cleanall run 
+.PHONY: check clean cleanall run libhttp libpcre

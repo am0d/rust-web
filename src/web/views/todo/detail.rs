@@ -14,8 +14,8 @@ impl<'a> TodoDetailView<'a> {
 }
 
 impl<'a> Action for TodoDetailView<'a> {
-    fn render(&self, print: |&SafeHtmlString| -> ()) {
-        print(&SafeHtmlString::new("<!DOCTYPE html>
+    fn render(&self, out: &mut Writer) {
+        out.write_str("<!DOCTYPE html>
 <html lang=\"en\">
   <head>
     <meta charset=\"utf-8\">
@@ -61,11 +61,11 @@ impl<'a> Action for TodoDetailView<'a> {
       </div>
     </div>
 
-    <div class=\"container\">"));
+    <div class=\"container\">");
 
-                print(&self.model.description.as_safe_string());
+                out.write_str(self.model.description.as_safe_string().to_str().as_slice());
 
-        print(&SafeHtmlString::new("</div><!-- /.container -->
+        out.write_str("</div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -74,7 +74,7 @@ impl<'a> Action for TodoDetailView<'a> {
     <script src=\"/assets/js/jquery.js\"></script>
     <script src=\"/assets/js/bootstrap.min.js\"></script>
   </body>
-</html>"));
+</html>");
     }
 }
 

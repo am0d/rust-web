@@ -14,7 +14,7 @@ use views::{Action, SafeHtmlString};
 pub struct StaticFile;
 
 impl Action for StaticFile  {
-    fn render(&self, _: |&SafeHtmlString| -> ()) {
+    fn render(&self, _out: &mut Writer) {
     }
 }
 

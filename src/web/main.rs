@@ -54,9 +54,7 @@ impl HelloWorldServer {
             }
         };
 
-        action.render(|s| {
-            response.write(s.to_str().into_bytes());
-        });
+        action.render(response);
     }
 }
 

@@ -17,8 +17,8 @@ pub fn get_url(request: &Request) -> ~str {
 struct NotFound;
 
 impl Action for NotFound {
-    fn render(&self, print: |&SafeHtmlString| -> ()) {
-        print(&SafeHtmlString::new("This page could not be found"));
+    fn render(&self, out: &mut Writer) {
+        out.write_str("This page could not be found");
     }
 }
 

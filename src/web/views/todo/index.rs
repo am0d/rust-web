@@ -14,8 +14,8 @@ impl<'a> TodoIndexView<'a> {
 }
 
 impl<'a> Action for TodoIndexView<'a> {
-    fn render(&self, print: |&SafeHtmlString| -> ()) {
-        print(&SafeHtmlString::new("<!DOCTYPE html>
+    fn render(&self, out: &mut Writer) {
+        out.write_str("<!DOCTYPE html>
 <html lang=\"en\">
   <head>
     <meta charset=\"utf-8\">
@@ -61,25 +61,25 @@ impl<'a> Action for TodoIndexView<'a> {
       </div>
     </div>
 
-    <div class=\"container\">"));
+    <div class=\"container\">");
 
         if self.model.len() > 0 {
-            print(&SafeHtmlString::new("<ul class=\"list-group\">\n"));
+            out.write_str("<ul class=\"list-group\">\n");
             for todo in self.model.iter() {
-                print(&SafeHtmlString::new("<li class=\"list-group-item\">"));
-                print(&SafeHtmlString::new("<a href=\"/todos/"));
-                print(&SafeHtmlString::new(todo.id.to_str()));
-                print(&SafeHtmlString::new("\">"));
-                print(&todo.description.as_safe_string());
-                print(&SafeHtmlString::new("</a></li>\n"));
+                out.write_str("<li class=\"list-group-item\">");
+                out.write_str("<a href=\"/todos/");
+                out.write_str(todo.id.to_str().as_safe_string().to_str().as_slice());
+                out.write_str("\">");
+                out.write_str(todo.description.as_safe_string().to_str().as_slice());
+                out.write_str("</a></li>\n");
             }
-            print(&SafeHtmlString::new("</ul>\n"));
+            out.write_str("</ul>\n");
         }
         else {
-            print(&SafeHtmlString::new("There are no todos in the system yet"));
+            out.write_str("There are no todos in the system yet");
         }
 
-        print(&SafeHtmlString::new("</div><!-- /.container -->
+        out.write_str("</div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -88,7 +88,7 @@ impl<'a> Action for TodoIndexView<'a> {
     <script src=\"/assets/js/jquery.js\"></script>
     <script src=\"/assets/js/bootstrap.min.js\"></script>
   </body>
-</html>"));
+</html>");
     }
 }
 

@@ -1,7 +1,7 @@
 
 use super::super::models::Todo;
 
-extern crate extra;
+
 extern crate http;
 
 use super::super::{View, SafeHtmlString};

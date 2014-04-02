@@ -9,7 +9,7 @@ pub trait Action {
 }
 
 pub struct SafeHtmlString {
-    priv val: ~str
+    val: ~str
 }
 
 impl SafeHtmlString {
@@ -30,7 +30,7 @@ pub trait AsSafeString {
 }
 
 pub struct RawHtmlString {
-    priv val: ~str
+    val: ~str
 }
 
 impl RawHtmlString {

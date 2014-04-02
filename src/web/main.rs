@@ -1,10 +1,11 @@
-#[feature(macro_rules)];
-#[feature(globs)];
+#![feature(macro_rules)];
+#[feature(globs)]
 
+
+extern crate pcre;
+extern crate http;
 extern crate collections;
 extern crate time;
-extern crate http;
-extern crate pcre;
 
 use std::io::net::ip::{SocketAddr, Ipv4Addr};
 

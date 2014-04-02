@@ -43,7 +43,7 @@ pub fn write_view(out_path: &Path, sections: &[parser::SectionType]) {
 }
 
 fn prelude (model: &str) -> ~str {
-    format!("extern crate extra;
+    format!("
 extern crate http;
 
 use super::super::\\{View, SafeHtmlString\\};

@@ -1,8 +1,8 @@
 #[deriving(Clone)]
 pub struct Todo {
-    id: int,
-    description: ~str,
-    completed: bool
+    pub id: int,
+    pub description: ~str,
+    pub completed: bool
 }
 
 impl Todo {

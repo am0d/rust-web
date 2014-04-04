@@ -1,5 +1,5 @@
-#[feature(macro_rules)];
-#[feature(globs)];
+#![feature(macro_rules)]
+#![feature(globs)]
 
 extern crate collections;
 extern crate time;
@@ -84,10 +84,25 @@ impl Server for HelloWorldServer {
             |state| {
                 let r = state.r;
                 let w = &mut state.w;
+
                 if failing() {
+                    use std::io::MemWriter;
+                    use std::rt::task::Task;
+                    use std::rt::local::Local;
+
+                    // get a backtrace for the failure
+                    let mut trace = MemWriter::new();
+                    drop(::std::rt::backtrace::write(&mut trace));
+
+                    //let task = Local::borrow(None::<Task>);
+                    //let cause = task.get().unwinder.cause;
+
                     // Set the status to 500 if the request failed
                     w.status = InternalServerError;
-                    drop(w.write(bytes!("Internal server error")));
+                    drop(w.write(bytes!("Internal server error\n")));
+
+                    // print the backtrace TODO make this more secure
+                    drop(w.write(trace.unwrap()));
                     drop(w.flush());
                 }
 

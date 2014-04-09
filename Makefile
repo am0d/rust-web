@@ -33,7 +33,7 @@ build/server: $(WEB_SOURCES)
 
 libhttp:
 	@echo Compiling libhttp
-	@cd rust-http; $(MAKE) $(MFLAGS)
+	@cd rust-http; ./configure && $(MAKE) $(MFLAGS)
 
 libpcre:
 	@echo Compiling libpcre

@@ -1,5 +1,3 @@
-use std::vec;
-
 use http::server::{Request, ResponseWriter};
 use http::headers::content_type::MediaType;
 

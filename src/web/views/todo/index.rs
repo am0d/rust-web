@@ -1,4 +1,4 @@
-use super::super::{Action, AsSafeString, SafeHtmlString};
+use super::super::{Action, AsSafeString};
 use super::super::models::Todo;
 
 pub struct TodoIndexView<'a> {
@@ -13,6 +13,7 @@ impl<'a> TodoIndexView<'a> {
     }
 }
 
+#[allow(unused_must_use)]
 impl<'a> Action for TodoIndexView<'a> {
     fn render(&self, out: &mut Writer) {
         out.write_str("<!DOCTYPE html>

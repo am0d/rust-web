@@ -87,13 +87,16 @@ impl Server for HelloWorldServer {
 
                 if failing() {
                     use std::io::MemWriter;
-                    use std::rt::task::Task;
-                    use std::rt::local::Local;
+                    //use std::rt::task::Task;
+                    //use std::rt::local::Local;
 
                     // get a backtrace for the failure
                     let mut trace = MemWriter::new();
                     drop(::std::rt::backtrace::write(&mut trace));
 
+                    // The lines below don't yet work.
+                    // There does not appear to be any way to get the failure
+                    // reason in this context.
                     //let task = Local::borrow(None::<Task>);
                     //let cause = task.get().unwinder.cause;
 
@@ -102,7 +105,7 @@ impl Server for HelloWorldServer {
                     drop(w.write(bytes!("Internal server error\n")));
 
                     // print the backtrace TODO make this more secure
-                    drop(w.write(trace.unwrap()));
+                    drop(w.write(trace.unwrap().as_slice()));
                     drop(w.flush());
                 }
 

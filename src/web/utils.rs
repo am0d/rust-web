@@ -2,7 +2,7 @@ use http::server::{Request, ResponseWriter};
 use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
 use http::status;
 
-use views::{Action, SafeHtmlString};
+use views::Action;
 
 // Extension methods
 pub fn get_url(request: &Request) -> ~str {
@@ -16,6 +16,7 @@ pub fn get_url(request: &Request) -> ~str {
 
 struct NotFound;
 
+#[allow(unused_must_use)]
 impl Action for NotFound {
     fn render(&self, out: &mut Writer) {
         out.write_str("This page could not be found");

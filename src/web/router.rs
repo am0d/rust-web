@@ -60,12 +60,6 @@ impl<T:Clone> Router<T> {
         }
     }
 
-    /*pub fn add_routes(&mut self, routes: Vec<(&str, T)>) {
-        for &(pattern, handler) in routes.iter() {
-            self.add_route(pattern, handler);
-        }
-    }*/
-
     pub fn find_route<'a> (&'a self, url: &str) -> Option<&'a T> {
         for route in self.routes.iter() {
             let h = &route.handler;

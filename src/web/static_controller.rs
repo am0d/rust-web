@@ -1,7 +1,6 @@
 use std::os;
 use std::io::Writer;
 use std::io::fs::File;
-use std::io;
 //use extra::time;
 
 use http::server::{Request, ResponseWriter};
@@ -9,7 +8,7 @@ use http::headers::content_type::MediaType;
 
 use super::utils::{get_url,not_found};
 
-use views::{Action, SafeHtmlString};
+use views::{Action};
 
 pub struct StaticFile;
 
@@ -68,7 +67,7 @@ impl StaticController {
 
                     response.headers.content_length = Some(file_contents.len());
 
-                    response.write(file_contents);
+                    drop(response.write(file_contents.as_slice()));
                 },
                 _ => {
                     not_found(request, response);

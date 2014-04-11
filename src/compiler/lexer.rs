@@ -4,11 +4,11 @@ use std::iter::Peekable;
 use token::{Token, String, Whitespace, Operator, AtSymbol};
 
 pub struct Lexer<'a> {
-    pub line: int,
-    pub column: int,
-    pub source: &'a str,
-    pub chars: Peekable<char, Chars<'a>>,
-    pub peek: Option<Token>
+    line: int,
+    column: int,
+    source: &'a str,
+    chars: Peekable<char, Chars<'a>>,
+    peek: Option<Token>
 }
 
 impl<'a> Lexer<'a> {
@@ -111,5 +111,21 @@ impl<'a> Lexer<'a> {
             self.chars.next();
         }
         token
+    }
+}
+
+pub struct HtmlLexer<'a> {
+    source: &'a str
+}
+
+pub impl<'a> HtmlLexer<'a> {
+    pub fn new(source: &'a str) -> HtmlLexer<'a> {
+        HtmlLexer {
+            source: source
+        }
+    }
+
+    fn is_valid_email_char(c: char) -> bool {
+        false
     }
 }

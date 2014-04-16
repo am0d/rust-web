@@ -9,7 +9,7 @@ To run the server on 127.0.0.1:8080:
 
 Currently, the index page (http://127.0.0.1:8080/) as well as 2 todo pages (http://127.0.0.1:8080/todos and http://127.0.0.1:8080/todos/{}) are handled, as well as all the static files required for these.
 
-Future plans include writing a compiler for a Razor-like view syntax (which has been started already in the src/compiler folder), which would generate Rust code to be compiled with the rest of the framework.  I also still need to hook this up to a database engine, and build in some support for migrations, etc.
+Future plans include writing a compiler for a Razor-like view syntax (this compiler now resides in a separate repository, http://github.com/am0d/rusty-razor), which would generate Rust code to be compiled with the rest of the framework.  I also still need to hook this up to a database engine, and build in some support for migrations, etc.
 
 Note: I make no claims about this being secure, fast or a recommended way of doing things.  I am writing this framework as an exercise for myself, to learn how a web framework is put together.  I am also not an expert in Rust, and there are likely plenty of things that could be done much better in here.
 

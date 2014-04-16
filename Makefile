@@ -8,20 +8,12 @@ endif
 
 #TODO These two lines below should only need the first wildcard - work out why that isn't working ...
 WEB_SOURCES := $(wildcard src/web/**/*.rs) $(wildcard src/web/*.rs) $(wildcard src/web/**/**/*.rs)
-COMPILER_SOURCES := $(wildcard src/compiler/*.rs) $(wildcard src/compiler/**/*.rs)
-BINARIES := build/compiler build/server
+BINARIES := build/server
 
 ALL_OBJS := $(ALL_SOURCES:src/%.rs=build/%.o)
 ALL_TESTS := $(ALL_SOURCES:src/%.rs=build/%)
 
 all: $(LIBS) $(BINARIES)
-
-compiler: build/compiler
-
-build/compiler: $(COMPILER_SOURCES)
-	@echo Compiling $@
-	@mkdir -p build/
-	@rustc src/compiler/main.rs $(LINK_FLAGS) -o $@
 
 run: $(BINARIES)
 	build/server

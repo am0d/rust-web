@@ -5,12 +5,12 @@ use http::status;
 use views::Action;
 
 // Extension methods
-pub fn get_url(request: &Request) -> ~str {
+pub fn get_url(request: &Request) -> StrBuf {
     match &request.request_uri {
-        &Star => ~"*",
-        &AbsoluteUri(ref url) => url.to_str(),
-        &AbsolutePath(ref url) => url.to_owned(),
-        &Authority(ref url) => url.to_owned()
+        &Star => StrBuf::from_str("*"),
+        &AbsoluteUri(ref url) => url.to_str().into_strbuf(),
+        &AbsolutePath(ref url) => url.clone(),
+        &Authority(ref url) => url.clone()
     }
 }
 

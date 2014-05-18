@@ -33,13 +33,13 @@ impl<T:Clone> Clone for Route<T> {
 
 #[deriving(Clone)]
 pub struct Router<T> {
-    routes: ~[Route<T>]
+    routes: Vec<Route<T>>
 }
 
 impl<T:Clone> Router<T> {
     pub fn new () -> Router<T> {
         Router {
-            routes: ~[]
+            routes: vec![]
         }
     }
 
@@ -60,10 +60,10 @@ impl<T:Clone> Router<T> {
         }
     }
 
-    pub fn find_route<'a> (&'a self, url: &str) -> Option<&'a T> {
+    pub fn find_route<'a> (&'a self, url: StrBuf) -> Option<&'a T> {
         for route in self.routes.iter() {
             let h = &route.handler;
-            match route.regex.exec(url) {
+            match route.regex.exec(url.as_slice()) {
                 Some(_) => {
                     return Some(h)
                 }

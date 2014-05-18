@@ -6,10 +6,10 @@ pub struct Todo {
 }
 
 impl Todo {
-    pub fn new(name: ~str) -> Todo {
+    pub fn new(name: &str) -> Todo {
         Todo {
             id: 3,
-            description: name,
+            description: name.to_owned(),
             completed: false
         }
     }

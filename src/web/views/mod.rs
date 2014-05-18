@@ -1,4 +1,4 @@
-use super::models;
+pub use super::models;
 
 //pub use self::todo;
 
@@ -9,19 +9,19 @@ pub trait Action {
 }
 
 pub struct SafeHtmlString {
-    val: ~str
+    val: StrBuf
 }
 
 impl SafeHtmlString {
     pub fn new<'a>(v: &'a str) -> SafeHtmlString {
         SafeHtmlString {
-            val: v.to_owned()
+            val: v.into_strbuf()
         }
     }
 
     #[inline]
-    pub fn to_str(&self) -> ~str {
-        return self.val.to_owned()
+    pub fn to_str(&self) -> StrBuf {
+        return self.val.clone()
     }
 }
 
@@ -30,13 +30,13 @@ pub trait AsSafeString {
 }
 
 pub struct RawHtmlString {
-    val: ~str
+    val: StrBuf
 }
 
 impl RawHtmlString {
     pub fn new(v: &str) -> RawHtmlString {
         RawHtmlString {
-            val: v.to_owned()
+            val: v.into_strbuf()
         }
     }
 }
@@ -44,17 +44,35 @@ impl RawHtmlString {
 impl AsSafeString for RawHtmlString {
     fn as_safe_string(&self) -> SafeHtmlString {
         SafeHtmlString {
-            val: self.val.to_owned()
+            val: self.val.clone()
         }
     }
 }
 
 impl AsSafeString for ~str {
     fn as_safe_string(&self) -> SafeHtmlString {
-        use std::str;
-        let mut buffer = str::with_capacity(self.char_len());
+        let mut buffer = StrBuf::with_capacity(self.char_len());
 
         for c in self.chars() {
+            match c {
+                '<' => buffer.push_str("&lt;"),
+                '>' => buffer.push_str("&gt;"),
+                '&' => buffer.push_str("&amp;"),
+                _ => buffer.push_char(c)
+            }
+        }
+
+        return SafeHtmlString {
+            val: buffer
+        }
+    }
+}
+
+impl AsSafeString for StrBuf {
+    fn as_safe_string(&self) -> SafeHtmlString {
+        let mut buffer = StrBuf::with_capacity(self.len());
+
+        for c in self.as_slice().chars() {
             match c {
                 '<' => buffer.push_str("&lt;"),
                 '>' => buffer.push_str("&gt;"),

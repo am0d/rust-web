@@ -23,7 +23,7 @@ impl StaticController {
     pub fn Get (request: &Request, response: &mut ResponseWriter) -> ~Action {
         let working_dir = os::getcwd();
         let url = get_url(request);
-        let mut file_path: PosixPath = working_dir.join(url.slice_from(1));
+        let mut file_path: PosixPath = working_dir.join(url.as_slice().slice_from(1));
 
         if file_path.exists() {
             if !file_path.is_file() {
@@ -44,15 +44,15 @@ impl StaticController {
                     response.headers.content_type = match file_path.extension_str() {
                         Some("css") => {
                             Some(MediaType {
-                                type_: ~"text",
-                                subtype: ~"css",
+                                type_: StrBuf::from_str("text"),
+                                subtype: StrBuf::from_str("css"),
                                 parameters: vec!()
                             })
                         }
                         Some("js") => {
                             Some(MediaType {
-                                type_: ~"text",
-                                subtype: ~"javascript",
+                                type_: StrBuf::from_str("text"),
+                                subtype: StrBuf::from_str("javascript"),
                                 parameters: vec!()
                             })
                         }

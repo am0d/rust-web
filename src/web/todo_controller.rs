@@ -16,15 +16,15 @@ impl TodoController {
 
     pub fn Index(_request: &Request, response: &mut ResponseWriter) -> ~Action {
         let todo_list = vec!(
-            Todo::new(~"Finish this wonderful framework!"),
-            Todo::new(~"Make it more generic"),
-            Todo::new(~"Learn rust"),
-            Todo::new(~"Make <b> this & publish it"));
+            Todo::new("Finish this wonderful framework!"),
+            Todo::new("Make it more generic"),
+            Todo::new("Learn rust"),
+            Todo::new("Make <b> this & publish it"));
 
         response.headers.content_type = Some(MediaType{
-            type_: ~"text",
-            subtype: ~"html",
-            parameters: vec!((~"charset", ~"UTF-8"))
+            type_: StrBuf::from_str("text"),
+            subtype: StrBuf::from_str("html"),
+            parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
         });
 
         ~todo::TodoIndexView::new(todo_list) as ~Action
@@ -32,12 +32,12 @@ impl TodoController {
 
     pub fn Details(_request: &Request, response: &mut ResponseWriter) -> ~Action {
         response.headers.content_type = Some(MediaType {
-            type_: ~"text",
-            subtype: ~"html",
-            parameters: vec!((~"charset", ~"UTF-8"))
+            type_: StrBuf::from_str("text"),
+            subtype: StrBuf::from_str("html"),
+            parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
         });
 
-        let model = ~Todo::new(~"Test");
+        let model = ~Todo::new("Test");
 
         ~todo::TodoDetailView::new(model) as ~Action
     }

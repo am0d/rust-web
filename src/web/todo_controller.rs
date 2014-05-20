@@ -14,7 +14,7 @@ impl TodoController {
         TodoController
     }
 
-    pub fn Index(_request: &Request, response: &mut ResponseWriter) -> ~Action {
+    pub fn Index(_request: &Request, response: &mut ResponseWriter) -> Box<Action> {
         let todo_list = vec!(
             Todo::new("Finish this wonderful framework!"),
             Todo::new("Make it more generic"),
@@ -27,22 +27,22 @@ impl TodoController {
             parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
         });
 
-        ~todo::TodoIndexView::new(todo_list) as ~Action
+        box todo::TodoIndexView::new(todo_list) as Box<Action>
     }
 
-    pub fn Details(_request: &Request, response: &mut ResponseWriter) -> ~Action {
+    pub fn Details(_request: &Request, response: &mut ResponseWriter) -> Box<Action> {
         response.headers.content_type = Some(MediaType {
             type_: StrBuf::from_str("text"),
             subtype: StrBuf::from_str("html"),
             parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
         });
 
-        let model = ~Todo::new("Test");
+        let model = box Todo::new("Test");
 
-        ~todo::TodoDetailView::new(model) as ~Action
+        box todo::TodoDetailView::new(model) as Box<Action>
     }
     
-    pub fn Fail(_request: &Request, _response: &mut ResponseWriter) -> ~Action {
+    pub fn Fail(_request: &Request, _response: &mut ResponseWriter) -> Box<Action> {
         fail!("Failing on purpose here!");
     }
 }

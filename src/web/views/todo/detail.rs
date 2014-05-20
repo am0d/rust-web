@@ -2,11 +2,11 @@ use super::super::{Action, AsSafeString};
 use super::super::models::Todo;
 
 pub struct TodoDetailView<'a> {
-    model: ~Todo
+    model: Box<Todo>
 }
 
 impl<'a> TodoDetailView<'a> {
-    pub fn new(m: ~Todo) -> TodoDetailView<'a> {
+    pub fn new(m: Box<Todo>) -> TodoDetailView<'a> {
         TodoDetailView {
             model: m//.clone()
         }

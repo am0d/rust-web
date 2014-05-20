@@ -28,7 +28,7 @@ pub mod router;
 // Web server part
 #[deriving(Clone)]
 struct HelloWorldServer {
-    router: router::Router<fn(&Request, &mut ResponseWriter) -> ~views::Action>
+    router: router::Router<fn(&Request, &mut ResponseWriter) -> Box<views::Action>>
 }
 
 impl HelloWorldServer {

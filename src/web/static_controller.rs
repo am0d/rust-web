@@ -20,7 +20,7 @@ impl Action for StaticFile  {
 pub struct StaticController;
 
 impl StaticController {
-    pub fn Get (request: &Request, response: &mut ResponseWriter) -> ~Action {
+    pub fn Get (request: &Request, response: &mut ResponseWriter) -> Box<Action> {
         let working_dir = os::getcwd();
         let url = get_url(request);
         let mut file_path: PosixPath = working_dir.join(url.as_slice().slice_from(1));
@@ -33,7 +33,7 @@ impl StaticController {
                     file_path = file_path.with_filename("default.html");
                     if !file_path.exists() || !file_path.is_file() {
                         not_found(request, response);
-                        return ~StaticFile as ~Action;
+                        return box StaticFile as Box<Action>;
                     }
                 }
             }
@@ -78,7 +78,7 @@ impl StaticController {
             not_found(request, response);
         }
 
-        return ~StaticFile as ~Action
+        return box StaticFile as Box<Action>
     }
 }
 

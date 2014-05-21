@@ -1,7 +1,7 @@
 RUST_FLAGS = -L . -O
 
 LIBS := libhttp libpcre
-LINK_FLAGS := -L rust-http/build/ -L pcre/lib/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
+LINK_FLAGS := -L rust-http/build/ -L rust-pcre/lib/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 ifdef PCRE_LIBDIR
 LINK_FLAGS += -L $(PCRE_LIBDIR)
 endif
@@ -29,7 +29,7 @@ libhttp:
 
 libpcre:
 	@echo Compiling libpcre
-	cd pcre; $(MAKE) install $(MFLAGS)
+	cd rust-pcre; $(MAKE) install $(MFLAGS)
 
 check: build/test
 	@./$<
@@ -44,6 +44,6 @@ clean:
 
 cleanall: clean
 	@cd rust-http; $(MAKE) $(MFLAGS) clean
-	@cd pcre; $(MAKE) $(MFLAGS) clean
+	@cd rust-pcre; $(MAKE) $(MFLAGS) clean
 
 .PHONY: check clean cleanall run libhttp libpcre

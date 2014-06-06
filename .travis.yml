@@ -16,6 +16,7 @@ install:
   - sudo apt-get --download-only install libpcre3gsa-dev
   - sudo dpkg -i --force-overwrite /var/cache/apt/archives/libpcre3gsa-dev_*.deb
 script:
+    - rustc --version
     - make 
 notifications:
     email:

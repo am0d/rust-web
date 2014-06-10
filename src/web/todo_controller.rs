@@ -22,9 +22,9 @@ impl TodoController {
             Todo::new("Make <b> this & publish it"));
 
         response.headers.content_type = Some(MediaType{
-            type_: StrBuf::from_str("text"),
-            subtype: StrBuf::from_str("html"),
-            parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
+            type_: String::from_str("text"),
+            subtype: String::from_str("html"),
+            parameters: vec!((String::from_str("charset"), String::from_str("UTF-8")))
         });
 
         box todo::TodoIndexView::new(todo_list) as Box<Action>
@@ -32,9 +32,9 @@ impl TodoController {
 
     pub fn Details(_request: &Request, response: &mut ResponseWriter) -> Box<Action> {
         response.headers.content_type = Some(MediaType {
-            type_: StrBuf::from_str("text"),
-            subtype: StrBuf::from_str("html"),
-            parameters: vec!((StrBuf::from_str("charset"), StrBuf::from_str("UTF-8")))
+            type_: String::from_str("text"),
+            subtype: String::from_str("html"),
+            parameters: vec!((String::from_str("charset"), String::from_str("UTF-8")))
         });
 
         let model = box Todo::new("Test");

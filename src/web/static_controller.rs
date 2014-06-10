@@ -44,15 +44,15 @@ impl StaticController {
                     response.headers.content_type = match file_path.extension_str() {
                         Some("css") => {
                             Some(MediaType {
-                                type_: StrBuf::from_str("text"),
-                                subtype: StrBuf::from_str("css"),
+                                type_: String::from_str("text"),
+                                subtype: String::from_str("css"),
                                 parameters: vec!()
                             })
                         }
                         Some("js") => {
                             Some(MediaType {
-                                type_: StrBuf::from_str("text"),
-                                subtype: StrBuf::from_str("javascript"),
+                                type_: String::from_str("text"),
+                                subtype: String::from_str("javascript"),
                                 parameters: vec!()
                             })
                         }

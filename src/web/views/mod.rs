@@ -9,18 +9,18 @@ pub trait Action {
 }
 
 pub struct SafeHtmlString {
-    val: StrBuf
+    val: String
 }
 
 impl SafeHtmlString {
     pub fn new<'a>(v: &'a str) -> SafeHtmlString {
         SafeHtmlString {
-            val: v.into_strbuf()
+            val: String::from_str(v)
         }
     }
 
     #[inline]
-    pub fn to_str(&self) -> StrBuf {
+    pub fn to_str(&self) -> String {
         return self.val.clone()
     }
 }
@@ -30,13 +30,13 @@ pub trait AsSafeString {
 }
 
 pub struct RawHtmlString {
-    val: StrBuf
+    val: String
 }
 
 impl RawHtmlString {
     pub fn new(v: &str) -> RawHtmlString {
         RawHtmlString {
-            val: v.into_strbuf()
+            val: String::from_str(v)
         }
     }
 }
@@ -51,7 +51,7 @@ impl AsSafeString for RawHtmlString {
 
 impl AsSafeString for ~str {
     fn as_safe_string(&self) -> SafeHtmlString {
-        let mut buffer = StrBuf::with_capacity(self.char_len());
+        let mut buffer = String::with_capacity(self.char_len());
 
         for c in self.chars() {
             match c {
@@ -68,9 +68,9 @@ impl AsSafeString for ~str {
     }
 }
 
-impl AsSafeString for StrBuf {
+impl AsSafeString for String {
     fn as_safe_string(&self) -> SafeHtmlString {
-        let mut buffer = StrBuf::with_capacity(self.len());
+        let mut buffer = String::with_capacity(self.len());
 
         for c in self.as_slice().chars() {
             match c {

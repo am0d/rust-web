@@ -64,7 +64,7 @@ impl Server for HelloWorldServer {
     }
 
     fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
-        use std::unstable::finally::try_finally;
+        use std::finally::try_finally;
         use std::task::failing;
 
         struct State <'a, 'b> {

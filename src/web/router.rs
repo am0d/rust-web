@@ -14,7 +14,7 @@ enum Method {
 struct Route<T> {
     method: Method,
     regex: Pcre,
-    pattern: ~str,
+    pattern: String,
     handler: T
 }
 
@@ -24,7 +24,7 @@ impl<T:Clone> Clone for Route<T> {
         compile_options.add(Caseless);
         Route {
             method: self.method,
-            regex: Pcre::compile_with_options(self.pattern, &compile_options).unwrap(),
+            regex: Pcre::compile_with_options(self.pattern.as_slice(), &compile_options).unwrap(),
             pattern: self.pattern.clone(),
             handler: self.handler.clone()
         }
@@ -51,8 +51,9 @@ impl<T:Clone> Router<T> {
                 self.routes.push(Route {
                     method: Get, 
                     regex: r, 
-                    pattern: pattern.to_owned(),
-                    handler: handler});
+                    pattern: String::from_str(pattern),
+                    handler: handler
+                });
             }
             Err(s) => {
                 fail!("Error compiling route regex: {}", s.message());
@@ -60,7 +61,7 @@ impl<T:Clone> Router<T> {
         }
     }
 
-    pub fn find_route<'a> (&'a self, url: StrBuf) -> Option<&'a T> {
+    pub fn find_route<'a> (&'a self, url: String) -> Option<&'a T> {
         for route in self.routes.iter() {
             let h = &route.handler;
             match route.regex.exec(url.as_slice()) {

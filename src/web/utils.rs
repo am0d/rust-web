@@ -5,10 +5,10 @@ use http::status;
 use views::Action;
 
 // Extension methods
-pub fn get_url(request: &Request) -> StrBuf {
+pub fn get_url(request: &Request) -> String {
     match &request.request_uri {
-        &Star => StrBuf::from_str("*"),
-        &AbsoluteUri(ref url) => url.to_str().into_strbuf(),
+        &Star => String::from_str("*"),
+        &AbsoluteUri(ref url) => url.to_str(),
         &AbsolutePath(ref url) => url.clone(),
         &Authority(ref url) => url.clone()
     }
@@ -25,5 +25,6 @@ impl Action for NotFound {
 
 pub fn not_found(_: &Request, response: &mut ResponseWriter) -> Box<Action> {
     response.status = status::NotFound;
+
     box NotFound as Box<Action>
 }

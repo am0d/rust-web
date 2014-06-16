@@ -49,25 +49,6 @@ impl AsSafeString for RawHtmlString {
     }
 }
 
-impl AsSafeString for ~str {
-    fn as_safe_string(&self) -> SafeHtmlString {
-        let mut buffer = String::with_capacity(self.char_len());
-
-        for c in self.chars() {
-            match c {
-                '<' => buffer.push_str("&lt;"),
-                '>' => buffer.push_str("&gt;"),
-                '&' => buffer.push_str("&amp;"),
-                _ => buffer.push_char(c)
-            }
-        }
-
-        return SafeHtmlString {
-            val: buffer
-        }
-    }
-}
-
 impl AsSafeString for String {
     fn as_safe_string(&self) -> SafeHtmlString {
         let mut buffer = String::with_capacity(self.len());

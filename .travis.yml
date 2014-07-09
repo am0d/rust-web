@@ -1,24 +1,16 @@
-env:
-    global:
-        - PCRE_LIBDIR="/opt/gimp-standalone/lib/x86_64-linux-gnu"
-        - LD_LIBRARY_PATH="/opt/gimp-standalone/lib/x86_64-linux-gnu"
-before_install:
-    - yes | sudo add-apt-repository ppa:hansjorg/rust
-    - yes | sudo add-apt-repository ppa:otto-kesselgulasch/gimp-standalone
-    - sudo apt-get update
-install:
-    - curl -O http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-    - tar xfz rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-    - (cd rust-nightly-x86_64-unknown-linux-gnu/ && sudo ./install.sh)
-    - sudo apt-get --download-only install libpcre3gsa
-    - sudo dpkg -i --force-overwrite /var/cache/apt/archives/libpcre3gsa_*.deb
-    - sudo apt-get --download-only install libpcrecpp0gsa
-    - sudo dpkg -i --force-overwrite /var/cache/apt/archives/libpcrecpp0gsa_*.deb
-    - sudo apt-get --download-only install libpcre3gsa-dev
-    - sudo dpkg -i --force-overwrite /var/cache/apt/archives/libpcre3gsa-dev_*.deb
 script:
-    - rustc --version
-    - make 
+  - cargo build
+  - make all
+before_install:
+  - yes | sudo add-apt-repository ppa:cmrx64/cargo
+  - sudo apt-get update
+  - sudo apt-get install cargo
+install:
+  - wget http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz -O - | sudo tar zxf - --strip-components 1 -C /usr/local
+script:
+  - rustc --version
+  - cargo build
+  - cargo test
 notifications:
     email:
         - damien.schoof+github@gmail.com

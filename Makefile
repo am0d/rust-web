@@ -1,7 +1,7 @@
 RUST_FLAGS = -L . -O
 
-LIBS := libhttp libpcre
-LINK_FLAGS := -L rust-http/build/ -L rust-pcre/lib/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
+LIBS := libhttp 
+LINK_FLAGS := -L rust-http/build/ -L build/ #TODO use rustpkg and remove the need for these hardcoded paths
 ifdef PCRE_LIBDIR
 LINK_FLAGS += -L $(PCRE_LIBDIR)
 endif

@@ -1,6 +1,5 @@
-extern crate extra;
+extern crate regex;
 extern crate http;
-extern crate pcre;
 
 pub mod views;
 pub mod utils;

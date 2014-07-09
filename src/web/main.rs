@@ -1,15 +1,14 @@
 #![feature(macro_rules)]
-#![feature(globs)]
 
 extern crate collections;
 extern crate time;
+extern crate regex;
 extern crate http;
-extern crate pcre;
 
 use std::io::net::ip::{SocketAddr, Ipv4Addr};
 
 use http::server::{Config, Server, Request, ResponseWriter};
-use http::method::{Get};
+//use http::method::{Get};
 use http::status::InternalServerError;
 
 use self::utils::{not_found, get_url};
@@ -25,10 +24,12 @@ pub mod models;
 pub mod views;
 pub mod router;
 
+type RequestHandler = fn(&Request, &mut ResponseWriter) -> Box<views::Action>;
+
 // Web server part
 #[deriving(Clone)]
 struct HelloWorldServer {
-    router: router::Router<fn(&Request, &mut ResponseWriter) -> Box<views::Action>>
+    router: router::Router<RequestHandler>
 }
 
 impl HelloWorldServer {
@@ -63,7 +64,7 @@ impl Server for HelloWorldServer {
         Config { bind_address: SocketAddr { ip: Ipv4Addr(127, 0, 0, 1), port: 8080 } }
     }
 
-    fn handle_request(&self, _r: &Request, w: &mut ResponseWriter) {
+    fn handle_request(&self, _r: Request, w: &mut ResponseWriter) {
         use std::finally::try_finally;
         use std::task::failing;
 
@@ -72,7 +73,7 @@ impl Server for HelloWorldServer {
             w: &'a mut ResponseWriter<'b>
         };
 
-        let mut s = State {r: _r, w: w};
+        let mut s = State {r: &_r, w: w};
 
         try_finally(&mut s, (),
             |state, ()| {
@@ -102,7 +103,7 @@ impl Server for HelloWorldServer {
 
                     // Set the status to 500 if the request failed
                     w.status = InternalServerError;
-                    drop(w.write(bytes!("Internal server error\n")));
+                    drop(w.write(b"Internal server error\n"));
 
                     // print the backtrace TODO make this more secure
                     drop(w.write(trace.unwrap().as_slice()));
@@ -126,13 +127,13 @@ fn main() {
     let mut server = HelloWorldServer::new();
 
     route!(server.router -> 
-           "^/todos/?$" => TodoController::Index,
-           "^/todos/(\\d+)$" => TodoController::Details,
+           "^/todos/?$" => TodoController::index,
+           "^/todos/(\\d+)$" => TodoController::details,
 
-           "^/fail" => TodoController::Fail,
+           "^/fail" => TodoController::fail,
 
-           "^/assets/.*" => StaticController::Get,
-           "^/$" => StaticController::Get);
+           "^/assets/.*" => StaticController::get,
+           "^/$" => StaticController::get);
 
     println!("{}", "Rust server up and running");
     server.serve_forever();

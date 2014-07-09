@@ -20,8 +20,8 @@ impl SafeHtmlString {
     }
 
     #[inline]
-    pub fn to_str(&self) -> String {
-        return self.val.clone()
+    pub fn to_str(self) -> String {
+        return self.val
     }
 }
 

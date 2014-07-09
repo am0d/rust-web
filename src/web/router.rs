@@ -1,8 +1,6 @@
-use collections::enum_set::EnumSet;
+use regex::Regex;
 
-use pcre::Pcre;
-use pcre::{CompileOption,Caseless};
-
+#[deriving(Clone)]
 enum Method {
     Delete,
     Get,
@@ -11,32 +9,48 @@ enum Method {
     Put
 }
 
+//#[deriving(Clone)]
 struct Route<T> {
     method: Method,
-    regex: Pcre,
+    regex: Regex,
     pattern: String,
     handler: T
 }
 
 impl<T:Clone> Clone for Route<T> {
     fn clone(&self) -> Route<T> {
-        let mut compile_options = EnumSet::<CompileOption>::empty();
-        compile_options.add(Caseless);
         Route {
-            method: self.method,
-            regex: Pcre::compile_with_options(self.pattern.as_slice(), &compile_options).unwrap(),
+            method: self.method.clone(),
+            regex: self.regex.clone(),
             pattern: self.pattern.clone(),
             handler: self.handler.clone()
         }
     }
 }
 
-#[deriving(Clone)]
+//#[deriving(Clone)]
 pub struct Router<T> {
     routes: Vec<Route<T>>
 }
 
-impl<T:Clone> Router<T> {
+
+impl<T:Copy> Clone for Router<T> {
+    fn clone(&self) -> Router<T> {
+        //let mut routes = self.routes.iter().map(|r| *r);
+        Router {
+            routes: self.routes.iter().map(|r| {
+                        Route {
+                            method: r.method.clone(),
+                            regex: r.regex.clone(),
+                            pattern: r.pattern.clone(),
+                            handler: r.handler
+                        }
+                    }).collect()
+        }
+    }
+}
+
+impl<T> Router<T> {
     pub fn new () -> Router<T> {
         Router {
             routes: vec![]
@@ -44,9 +58,7 @@ impl<T:Clone> Router<T> {
     }
 
     pub fn add_route(&mut self, pattern: &str, handler: T) {
-        let mut compile_options = EnumSet::<CompileOption>::empty();
-        compile_options.add(Caseless);
-        match Pcre::compile_with_options(pattern, &compile_options) {
+        match Regex::new(pattern) {
             Ok(r) => {
                 self.routes.push(Route {
                     method: Get, 
@@ -55,8 +67,8 @@ impl<T:Clone> Router<T> {
                     handler: handler
                 });
             }
-            Err(s) => {
-                fail!("Error compiling route regex: {}", s.message());
+            Err(e) => {
+                fail!("Error compiling route regex: {}", e);
             }
         }
     }
@@ -64,11 +76,8 @@ impl<T:Clone> Router<T> {
     pub fn find_route<'a> (&'a self, url: String) -> Option<&'a T> {
         for route in self.routes.iter() {
             let h = &route.handler;
-            match route.regex.exec(url.as_slice()) {
-                Some(_) => {
-                    return Some(h)
-                }
-                None => {}
+            if route.regex.is_match(url.as_slice()) {
+                return Some(h)
             }
         }
         None
@@ -76,25 +85,29 @@ impl<T:Clone> Router<T> {
 }
 
 #[cfg(test)]
-fn route1() {
-}
+mod test {
+    use super::Router;
 
-#[test]
-fn add_route() {
-    let mut router = Router::<extern fn()>::new();
+    fn route1() {
+    }
 
-    router.add_route("^/", route1);
+    #[test]
+    fn add_route() {
+        let mut router = Router::<fn()>::new();
 
-    let r = router.find_route("/");
-    assert!(r.is_some());
-}
+        router.add_route("^/", route1);
 
-#[test]
-fn dont_match_routes() {
-    let mut router = Router::<extern fn()>::new();
+        let r = router.find_route("/".to_string());
+        assert!(r.is_some());
+    }
 
-    router.add_route("^/$", route1);
+    #[test]
+    fn dont_match_routes() {
+        let mut router = Router::<fn()>::new();
 
-    let r = router.find_route("/missing");
-    assert!(r.is_none());
+        router.add_route("^/$", route1);
+
+        let r = router.find_route("/missing".to_string());
+        assert!(r.is_none());
+    }
 }

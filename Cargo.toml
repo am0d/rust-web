@@ -1,0 +1,13 @@
+[package]
+name = "rust-web"
+version = "0.1.0-pre"
+readme = "README.md"
+authors = [ "Damien Schoof" ]
+tags = ["web", "http", "library"]
+
+[[bin]]
+name = "server"
+path = "src/web/main.rs"
+
+[dependencies.http]
+git = "https://github.com/am0d/rust-http.git"

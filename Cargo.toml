@@ -1,9 +1,7 @@
 [package]
 name = "rust-web"
 version = "0.1.0-pre"
-readme = "README.md"
 authors = [ "Damien Schoof" ]
-tags = ["web", "http", "library"]
 
 [[bin]]
 name = "server"

@@ -8,7 +8,7 @@ use views::Action;
 pub fn get_url(request: &Request) -> String {
     match &request.request_uri {
         &Star => String::from_str("*"),
-        &AbsoluteUri(ref url) => url.to_str(),
+        &AbsoluteUri(ref url) => url.to_string(),
         &AbsolutePath(ref url) => url.clone(),
         &Authority(ref url) => url.clone()
     }

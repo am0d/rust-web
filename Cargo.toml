@@ -8,4 +8,4 @@ name = "server"
 #path = "src/web/main.rs"
 
 [dependencies.http]
-git = "https://github.com/am0d/rust-http.git"
+git = "https://github.com/chris-morgan/rust-http.git"

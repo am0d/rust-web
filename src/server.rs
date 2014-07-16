@@ -40,7 +40,7 @@ impl HelloWorldServer {
     }
 
     fn log_request(&self, _r: &Request, response: &mut ResponseWriter) {
-        print!("{} \"{}\" {} {} {}\n", _r.method.to_str(), get_url(_r), time::now().rfc822(), _r.remote_addr.unwrap().to_str(), response.status.code() as uint);
+        print!("{} \"{}\" {} {} {}\n", _r.method.to_string(), get_url(_r), time::now().rfc822(), _r.remote_addr.unwrap().to_string(), response.status.code() as uint);
     }
 
     fn dispatch_request(&self, request: &Request, response: &mut ResponseWriter) {

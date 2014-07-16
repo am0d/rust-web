@@ -69,7 +69,7 @@ impl<'a> Action for TodoIndexView<'a> {
             for todo in self.model.iter() {
                 out.write_str("<li class=\"list-group-item\">");
                 out.write_str("<a href=\"/todos/");
-                out.write_str(todo.id.to_str().as_safe_string().to_str().as_slice());
+                out.write_str(todo.id.to_string().as_safe_string().to_str().as_slice());
                 out.write_str("\">");
                 out.write_str(todo.description.as_safe_string().to_str().as_slice());
                 out.write_str("</a></li>\n");

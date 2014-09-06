@@ -3,3 +3,4 @@
 !.gitignore
 build
 target
+Cargo.lock

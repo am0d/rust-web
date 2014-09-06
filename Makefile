@@ -43,7 +43,6 @@ clean:
 	@rm -f build/* $(BINARIES)
 
 cleanall: clean
-	@cd rust-http; $(MAKE) $(MFLAGS) clean
-	@cd rust-pcre; $(MAKE) $(MFLAGS) clean
+	cargo clean
 
 .PHONY: check clean cleanall run libhttp libpcre

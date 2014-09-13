@@ -20,7 +20,7 @@ impl Action for StaticFile  {
 pub struct StaticController;
 
 impl StaticController {
-    pub fn get (request: &Request, response: &mut ResponseWriter) -> Box<Action> {
+    pub fn get (request: &Request, response: &mut ResponseWriter) -> Box<Action + 'static> {
         let working_dir = os::getcwd();
         let url = get_url(request);
         let mut file_path: PosixPath = working_dir.join(url.as_slice().slice_from(1));

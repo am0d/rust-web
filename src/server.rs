@@ -24,7 +24,7 @@ pub mod models;
 pub mod views;
 pub mod router;
 
-type RequestHandler = fn(&Request, &mut ResponseWriter) -> Box<views::Action>;
+type RequestHandler = fn(&Request, &mut ResponseWriter) -> Box<views::Action + 'static>;
 
 // Web server part
 #[deriving(Clone)]
@@ -68,7 +68,7 @@ impl Server for HelloWorldServer {
         use std::finally::try_finally;
         use std::task::failing;
 
-        struct State <'a, 'b> {
+        struct State <'a, 'b: 'a> {
             r: &'a Request,
             w: &'a mut ResponseWriter<'b>
         };

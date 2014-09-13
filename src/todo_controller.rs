@@ -14,7 +14,7 @@ impl TodoController {
         TodoController
     }
 
-    pub fn index(_request: &Request, response: &mut ResponseWriter) -> Box<Action> {
+    pub fn index(_request: &Request, response: &mut ResponseWriter) -> Box<Action + 'static> {
         let todo_list = vec!(
             Todo::new("Finish this wonderful framework!"),
             Todo::new("Make it more generic"),
@@ -30,7 +30,7 @@ impl TodoController {
         box todo::TodoIndexView::new(todo_list) as Box<Action>
     }
 
-    pub fn details(_request: &Request, response: &mut ResponseWriter) -> Box<Action> {
+    pub fn details(_request: &Request, response: &mut ResponseWriter) -> Box<Action + 'static> {
         response.headers.content_type = Some(MediaType {
             type_: String::from_str("text"),
             subtype: String::from_str("html"),
@@ -42,7 +42,7 @@ impl TodoController {
         box todo::TodoDetailView::new(model) as Box<Action>
     }
     
-    pub fn fail(_request: &Request, _response: &mut ResponseWriter) -> Box<Action> {
+    pub fn fail(_request: &Request, _response: &mut ResponseWriter) -> Box<Action + 'static> {
         fail!("Failing on purpose here!");
     }
 }

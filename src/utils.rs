@@ -23,7 +23,7 @@ impl Action for NotFound {
     }
 }
 
-pub fn not_found(_: &Request, response: &mut ResponseWriter) -> Box<Action> {
+pub fn not_found(_: &Request, response: &mut ResponseWriter) -> Box<Action + 'static> {
     response.status = status::NotFound;
 
     box NotFound as Box<Action>

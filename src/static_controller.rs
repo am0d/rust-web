@@ -1,6 +1,7 @@
 use std::os;
 use std::io::Writer;
 use std::io::fs::File;
+use std::io::fs::PathExtensions;
 //use extra::time;
 
 use http::server::{Request, ResponseWriter};

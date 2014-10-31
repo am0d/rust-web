@@ -58,7 +58,7 @@ impl AsSafeString for String {
                 '<' => buffer.push_str("&lt;"),
                 '>' => buffer.push_str("&gt;"),
                 '&' => buffer.push_str("&amp;"),
-                _ => buffer.push_char(c)
+                _ => buffer.push(c)
             }
         }
 

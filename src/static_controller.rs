@@ -63,7 +63,7 @@ impl StaticController {
                     //let reader = f.get_mut_ref();
                     let file_contents = match reader.read_to_end() {
                         Ok(contents) => contents,
-                        Err(msg) => fail!(msg)
+                        Err(msg) => panic!(msg)
                     };
 
                     response.headers.content_length = Some(file_contents.len());

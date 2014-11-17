@@ -43,7 +43,7 @@ impl TodoController {
     }
     
     pub fn fail(_request: &Request, _response: &mut ResponseWriter) -> Box<Action + 'static> {
-        fail!("Failing on purpose here!");
+        panic!("Failing on purpose here!");
     }
 }
 

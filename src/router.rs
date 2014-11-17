@@ -68,7 +68,7 @@ impl<T> Router<T> {
                 });
             }
             Err(e) => {
-                fail!("Error compiling route regex: {}", e);
+                panic!("Error compiling route regex: {}", e);
             }
         }
     }

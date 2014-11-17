@@ -9,3 +9,10 @@ name = "server"
 
 [dependencies.http]
 git = "https://github.com/chris-morgan/rust-http.git"
+
+[dependencies.time]
+git = "https://github.com/rust-lang/time.git"
+
+#[dependencies.razor]
+#git = "https://github.com/am0d/rusty-razor.git"
+#branch = "wip"

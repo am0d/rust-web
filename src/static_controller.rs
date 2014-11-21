@@ -24,7 +24,7 @@ impl StaticController {
     pub fn get (request: &Request, response: &mut ResponseWriter) -> Box<Action + 'static> {
         let working_dir = os::getcwd();
         let url = get_url(request);
-        let mut file_path: PosixPath = working_dir.join(url.as_slice().slice_from(1));
+        let mut file_path: PosixPath = working_dir.unwrap().join(url.as_slice().slice_from(1));
 
         if file_path.exists() {
             if !file_path.is_file() {

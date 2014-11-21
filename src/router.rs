@@ -61,7 +61,7 @@ impl<T> Router<T> {
         match Regex::new(pattern) {
             Ok(r) => {
                 self.routes.push(Route {
-                    method: Get, 
+                    method: Method::Get, 
                     regex: r, 
                     pattern: String::from_str(pattern),
                     handler: handler

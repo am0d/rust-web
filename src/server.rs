@@ -1,4 +1,5 @@
 #![feature(macro_rules)]
+#![feature(if_let)]
 
 extern crate collections;
 extern crate time;
@@ -106,7 +107,7 @@ impl Server for HelloWorldServer {
                     drop(w.write(b"Internal server error\n"));
 
                     // print the backtrace TODO make this more secure
-                    drop(w.write(trace.unwrap().as_slice()));
+                    drop(w.write(trace.into_inner().as_slice()));
                     drop(w.flush());
                 }
 

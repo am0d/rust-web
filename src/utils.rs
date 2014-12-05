@@ -1,5 +1,5 @@
 use http::server::{Request, ResponseWriter};
-use http::server::request::{Star, AbsoluteUri, AbsolutePath, Authority};
+use http::server::request::RequestUri::{Star, AbsoluteUri, AbsolutePath, Authority};
 use http::status;
 
 use views::Action;
